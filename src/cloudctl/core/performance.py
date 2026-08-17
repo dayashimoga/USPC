@@ -450,3 +450,123 @@ def validate_performance_budgets(config: dict, measurements: dict[str, float]) -
                 )
 
     return results
+
+
+LOAD_PROFILES: dict[str, dict[str, Any]] = {
+    "SMOKE": {"concurrency": 1, "ops_per_client": 5, "description": "Quick validation run"},
+    "NORMAL": {
+        "concurrency": 5,
+        "ops_per_client": 20,
+        "description": "Standard personal cloud baseline",
+    },
+    "HEAVY": {
+        "concurrency": 20,
+        "ops_per_client": 50,
+        "description": "Multi-user peak concurrent load",
+    },
+    "MEDIA_HEAVY": {
+        "concurrency": 50,
+        "ops_per_client": 100,
+        "description": "High-throughput media streaming & transcoding load",
+    },
+    "MULTI_USER": {
+        "concurrency": 100,
+        "ops_per_client": 50,
+        "description": "High-density multi-tenant API and file transactions",
+    },
+    "STRESS": {
+        "concurrency": 150,
+        "ops_per_client": 100,
+        "description": "Progressive system saturation and breaking-point probe",
+    },
+    "SOAK": {
+        "concurrency": 8,
+        "ops_per_client": 200,
+        "description": "Sustained multi-cycle endurance stability test",
+    },
+}
+
+
+@dataclass
+class SoakTestResult:
+    """Results of sustained endurance and resource leak soak test."""
+
+    duration_seconds: float
+    total_cycles: int
+    success_count: int
+    error_count: int
+    throughput_ops_sec: float
+    avg_latency_ms: float
+    p95_latency_ms: float
+    initial_ram_mb: float
+    final_ram_mb: float
+    memory_drift_mb: float
+    stability_verdict: str  # STABLE, DEGRADED, LEAK_DETECTED
+
+
+def run_soak_test(
+    target_dir: str | Path, duration_seconds: float = 3.0, concurrency: int = 4
+) -> SoakTestResult:
+    """Execute sustained endurance soak test to detect memory leaks and resource degradation."""
+    import gc
+
+    import psutil
+
+    test_p = Path(target_dir).expanduser().resolve()
+    ensure_directory(test_p)
+
+    proc = psutil.Process()
+    gc.collect()
+    initial_ram = proc.memory_info().rss / (1024 * 1024)
+
+    t_start = time.perf_counter()
+    deadline = t_start + duration_seconds
+
+    latencies: list[float] = []
+    total_cycles = 0
+    errors = 0
+
+    while time.perf_counter() < deadline:
+        for t_idx in range(concurrency):
+            op_t0 = time.perf_counter()
+            thread_file = test_p / f".uspc_soak_{t_idx}_{total_cycles % 50}.tmp"
+            try:
+                thread_file.write_bytes(b"SOAK_PAYLOAD_CHUNK_" * 256)
+                _ = thread_file.read_bytes()
+                thread_file.unlink(missing_ok=True)
+            except Exception:
+                errors += 1
+            finally:
+                latencies.append((time.perf_counter() - op_t0) * 1000.0)
+                total_cycles += 1
+
+    actual_duration = max(0.001, time.perf_counter() - t_start)
+    gc.collect()
+    final_ram = proc.memory_info().rss / (1024 * 1024)
+    ram_drift = round(final_ram - initial_ram, 2)
+
+    latencies.sort()
+    p95 = round(latencies[int(len(latencies) * 0.95)] if latencies else 0.0, 2)
+    avg_lat = round(sum(latencies) / max(1, len(latencies)), 2)
+
+    # Verdict assessment
+    if errors == 0 and ram_drift < 50.0:
+        verdict = "STABLE"
+    elif errors > 0 and errors < total_cycles * 0.05:
+        verdict = "DEGRADED"
+    else:
+        verdict = "LEAK_DETECTED" if ram_drift >= 50.0 else "UNSTABLE"
+
+    return SoakTestResult(
+        duration_seconds=round(actual_duration, 2),
+        total_cycles=total_cycles,
+        success_count=total_cycles - errors,
+        error_count=errors,
+        throughput_ops_sec=round(total_cycles / actual_duration, 1),
+        avg_latency_ms=avg_lat,
+        p95_latency_ms=p95,
+        initial_ram_mb=round(initial_ram, 1),
+        final_ram_mb=round(final_ram, 1),
+        memory_drift_mb=ram_drift,
+        stability_verdict=verdict,
+    )

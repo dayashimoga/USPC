@@ -209,7 +209,19 @@ def create_parser() -> argparse.ArgumentParser:
         help="Force specific profile",
     )
     bench_parser.add_argument(
+        "--load-profile",
+        type=str,
+        choices=["smoke", "normal", "heavy", "media_heavy", "multi_user", "stress", "soak"],
+        help="Execute standardized workload load profile",
+    )
+    bench_parser.add_argument(
         "--stress", action="store_true", help="Execute progressive concurrency stress workload test"
+    )
+    bench_parser.add_argument(
+        "--soak", action="store_true", help="Execute sustained endurance soak stability test"
+    )
+    bench_parser.add_argument(
+        "--duration", type=float, default=3.0, help="Duration in seconds for soak test"
     )
     bench_parser.add_argument("--json", action="store_true", help="Output benchmark in JSON format")
 
