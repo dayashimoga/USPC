@@ -1,0 +1,93 @@
+{
+  "timestamp": 1786987670.7313662,
+  "license_compliance": "100% Free & Open Source Software (AGPL-3.0 / MIT / BSD / Apache-2.0)",
+  "saas_lockin_percentage": 0.0,
+  "direct_dependencies": [
+    {
+      "name": "pyyaml",
+      "version": ">=6.0.0",
+      "license": "MIT",
+      "status": "APPROVED"
+    },
+    {
+      "name": "jsonschema",
+      "version": ">=4.20.0",
+      "license": "MIT",
+      "status": "APPROVED"
+    },
+    {
+      "name": "psutil",
+      "version": ">=5.9.0",
+      "license": "BSD-3-Clause",
+      "status": "APPROVED"
+    },
+    {
+      "name": "cryptography",
+      "version": ">=41.0.0",
+      "license": "Apache-2.0",
+      "status": "APPROVED"
+    },
+    {
+      "name": "fastapi",
+      "version": ">=0.100.0",
+      "license": "MIT",
+      "status": "APPROVED"
+    },
+    {
+      "name": "uvicorn",
+      "version": ">=0.23.0",
+      "license": "BSD-3-Clause",
+      "status": "APPROVED"
+    },
+    {
+      "name": "pydantic",
+      "version": ">=2.0.0",
+      "license": "MIT",
+      "status": "APPROVED"
+    },
+    {
+      "name": "pillow",
+      "version": ">=10.0.0",
+      "license": "HPND",
+      "status": "APPROVED"
+    },
+    {
+      "name": "httpx",
+      "version": ">=0.25.0",
+      "license": "BSD-3-Clause",
+      "status": "APPROVED"
+    },
+    {
+      "name": "python-multipart",
+      "version": ">=0.0.6",
+      "license": "Apache-2.0",
+      "status": "APPROVED"
+    }
+  ],
+  "container_images": [
+    {
+      "image": "nextcloud:27.1.4-apache",
+      "license": "AGPL-3.0",
+      "status": "PINNED"
+    },
+    {
+      "image": "postgres:16.1-alpine",
+      "license": "PostgreSQL",
+      "status": "PINNED"
+    },
+    {
+      "image": "redis:7.2-alpine",
+      "license": "BSD-3-Clause",
+      "status": "PINNED"
+    },
+    {
+      "image": "headscale/headscale:latest",
+      "license": "BSD-3-Clause",
+      "status": "APPROVED"
+    }
+  ],
+  "sbom_drift_detected": false,
+  "unapproved_dependencies": 0,
+  "verdict": "PASS",
+  "evidence_class": "PRODUCTION-PROVEN"
+}

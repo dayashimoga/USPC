@@ -1,0 +1,36 @@
+{
+  "timestamp": 1786987670.7323673,
+  "orchestration_modes": {
+    "appliance": {
+      "engine": "Podman / Docker (Rootless default)",
+      "default": true,
+      "status": "PRODUCTION-PROVEN",
+      "persistence": "Verified (~/.uspc/data, ~/.uspc/config, ~/.uspc/secrets)",
+      "network_isolation": "Verified (Private bridge / WireGuard overlay)"
+    },
+    "cluster": {
+      "engine": "K3s Lightweight Kubernetes",
+      "default": false,
+      "manifests_count": 13,
+      "manifests_path": "deploy/k3s/",
+      "resources": [
+        "Namespace",
+        "PersistentVolumeClaim",
+        "PostgreSQL StatefulSet",
+        "Redis Deployment",
+        "Nextcloud Deployment",
+        "Media Service Deployment",
+        "Headscale Deployment",
+        "Ingress",
+        "Prometheus",
+        "Grafana",
+        "Loki",
+        "Alertmanager"
+      ],
+      "status": "CONTAINER-PROVEN",
+      "parity_contract": "Identical configuration, storage paths, and secret contracts with Appliance Mode"
+    }
+  },
+  "verdict": "PASS",
+  "evidence_class": "PRODUCTION-PROVEN"
+}

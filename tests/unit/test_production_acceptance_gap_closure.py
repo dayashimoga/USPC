@@ -229,6 +229,9 @@ def test_acceptance_strict_mode_and_multi_reports(temp_dir: Path, mock_config_di
     assert (out_dir / "SBOM.spdx.json").exists()
     assert (out_dir / "SBOM.cyclonedx.json").exists()
     assert (out_dir / "production-gap-audit.json").exists()
+    assert (out_dir / "dependency-audit.json").exists()
+    assert (out_dir / "documentation-audit.json").exists()
+    assert (out_dir / "deployment-audit.json").exists()
 
     # Test strict success when status is ACCEPTED
     rep_ok = generate_acceptance_report(config_path=str(cfg_file))

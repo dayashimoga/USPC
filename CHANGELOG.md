@@ -22,10 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `auto_tune_from_hardware()` automatically sizing memory limits, database connection pools, concurrency slots, and transcoder workers based on host resources.
   - Added `validate_performance_budgets()` and acceptance gates for P50/P95/P99 latency, startup time, and upload throughput.
   - Enforced deterministic 5-stage configuration precedence: `AUTO -> DEFAULT -> PROFILE -> ENVIRONMENT -> USER-OVERRIDE`.
-- **Enhanced 12-Gate Acceptance Framework**:
-  - Upgraded `cloudctl acceptance --full` with 12 structured capability gates, reproducible command manifests, and updated interactive HTML reporting.
+- **Enhanced 14-Gate Acceptance Framework & 16 Production Reports**:
+  - Upgraded `cloudctl acceptance --full --strict` as the authoritative release gate exporting all 16 JSON, HTML, and SPDX/CycloneDX audit reports.
+- **Repository-Wide Documentation Suite & Consistency Enforcement**:
+  - Complete rewrite and verification of 25 documentation files across architecture, operations, compliance, and user guides.
+  - Automated continuous documentation consistency suite (`tests/unit/test_documentation_consistency.py`) validating commands, configs, and internal links.
 - **Quality & Test Scale**:
-  - Expanded test suite to **207 automated tests** with **100% pass rate** and **95.60% code coverage**.
+  - Expanded test suite to **226 automated tests** with **100% pass rate (0 skips)** and **95.66% code coverage**.
   - 0 Ruff lint/format errors, 0 Bandit security vulnerabilities.
 
 ## [0.4.0] - 2026-08-17

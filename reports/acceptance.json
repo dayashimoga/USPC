@@ -1,5 +1,5 @@
 {
-  "timestamp": 1786987075.809418,
+  "timestamp": 1786987670.7227004,
   "platform_target": "windows 10",
   "architecture": "x86_64",
   "overall_status": "ACCEPTED",
@@ -59,9 +59,9 @@
     "db_pool_size": 50,
     "redis_max_memory_mb": 1024,
     "rate_limit_rpm": 1200,
-    "live_cpu_percent": 51.2,
-    "live_ram_percent": 92.0,
-    "live_disk_free_gb": 4.16
+    "live_cpu_percent": 38.6,
+    "live_ram_percent": 91.1,
+    "live_disk_free_gb": 4.15
   },
   "disaster_recovery_metrics": {
     "rpo_hours": 0.5,

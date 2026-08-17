@@ -6,8 +6,8 @@
 
 | Metric | Value | Requirement | Status |
 |---|---|---|---|
-| Total Automated Tests | 222 | ≥100 | **PASS** |
-| Test Pass Rate | 100% (222/222, 0 skipped) | 100% | **PASS** |
+| Total Automated Tests | 226 | ≥100 | **PASS** |
+| Test Pass Rate | 100% (226/226, 0 skipped) | 100% | **PASS** |
 | Code Coverage | 95.66% | ≥95.0% | **PASS** |
 | Ruff Linter Errors | 0 | 0 | **PASS** |
 | Bandit Security Issues (Med/High) | 0 | 0 | **PASS** |
@@ -71,18 +71,22 @@
 
 | File | Content |
 |---|---|
-| `production-readiness.json` | Complete machine-readable acceptance audit |
-| `production-readiness.html` | Interactive HTML dashboard |
+| `acceptance.json` / `acceptance.html` | Authoritative acceptance audit report |
+| `production-readiness.json` / `production-readiness.html` | 7-layer system readiness evaluation |
 | `gap-matrix.json` | 15-area requirement gap matrix |
-| `test-summary.json` | Aggregated test metrics |
+| `production-gap-audit.json` | Forensic gap audit with IDs, components, and fixes |
+| `test-summary.json` | Aggregated test execution and pass metrics |
 | `performance.json` | Latency budgets and soak measurements |
-| `resilience.json` | Fault injection results |
-| `dr-rpo-rto.json` | Measured RPO/RTO evidence |
-| `upgrade-rollback.json` | Migration rollback proofs |
-| `monitoring.json` | Observability configuration audit |
-| `security.json` | Security policy audit |
-| `SBOM.spdx.json` | SPDX 2.3 software inventory |
-| `SBOM.cyclonedx.json` | CycloneDX 1.5 software inventory |
+| `resilience.json` | Fault injection and degradation results |
+| `dr-rpo-rto.json` | Measured disaster recovery RPO/RTO evidence |
+| `upgrade-rollback.json` | Schema migration and rollback proofs |
+| `monitoring.json` | Observability configuration and alert audit |
+| `security.json` | Cryptographic authentication and security policy audit |
+| `SBOM.spdx.json` | SPDX 2.3 software bill of materials |
+| `SBOM.cyclonedx.json` | CycloneDX 1.5 software bill of materials |
+| `dependency-audit.json` | Full direct/transitive dependency and container image audit |
+| `documentation-audit.json` | Documentation inventory, link resolution, and CLI alignment audit |
+| `deployment-audit.json` | Podman Appliance Mode and K3s Cluster Mode parity audit |
 
 ---
 
