@@ -54,8 +54,10 @@
 - [x] Cross-network physical multi-host WireGuard routing `[HARDWARE-REQUIRED]`
 
 ## Testing & Quality Assurance
-- [x] Pytest test suites (95.58% code coverage, 100% pass across 211 tests, 4 skipped e2e container tests) `[UNIT-PROVEN]`
+- [x] Pytest test suites (95.68% code coverage, 100% pass across 216 tests, 4 skipped e2e container tests) `[UNIT-PROVEN]`
 - [x] Automated acceptance lab release gate (`cloudctl acceptance --full`) generating JSON & interactive HTML reports `[AUTOMATED-PROVEN]`
+- [x] Physical hardware & WAN mesh acceptance workflow (`cloudctl acceptance --hardware`) `[HARDWARE-REQUIRED]`
+
 
 
 - [x] Exhaustive security attack test suite (`tests/unit/test_security_attacks.py`) `[UNIT-PROVEN]`

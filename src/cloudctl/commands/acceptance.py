@@ -521,8 +521,47 @@ def generate_html_report(report: AcceptanceReport) -> str:
 """
 
 
+def execute_hardware_acceptance(args: argparse.Namespace) -> int:
+    """Execute physical hardware, WAN mesh, and multi-device evidence checklist."""
+    cfg_mgr = ConfigManager(config_path=getattr(args, "config", None))
+    config = cfg_mgr.load_config()
+    net_mgr = NetworkManager(config)
+    endpoint = getattr(args, "endpoint", None)
+
+    probe = net_mgr.probe_hardware_wan(target_endpoint=endpoint)
+
+    if getattr(args, "json", False) is True:
+        print(json.dumps({"hardware_acceptance_evidence": probe}, indent=2))
+        return 0 if probe["status"] == "PASS" else (0 if probe["status"] == "PENDING" else 1)
+
+    print("\n" + "=" * 78)
+    print(" USPC PHYSICAL HARDWARE & WAN MESH ACCEPTANCE WORKFLOW")
+    print("=" * 78)
+    print(f" Target Endpoint           : {probe['target_endpoint']}")
+    print(f" Physical Network Adapters : {probe['physical_interfaces_count']} interfaces detected")
+    print(f" WireGuard VPN Adapters    : {probe['wireguard_adapters'] or 'None (Virtual)'}")
+    print(f" Reachability Verdict      : [{probe['status']}] ({probe['classification']})")
+    if probe["latency_ms"] is not None:
+        print(f" Physical Round-Trip Latency: {probe['latency_ms']} ms")
+    print("-" * 78)
+    if probe["status"] == "PENDING":
+        print(" [!] NOTICE: Physical multi-device WAN routing requires physical hardware peers.")
+        print("     To complete physical proof, enroll a remote peer node and run:")
+        print("     cloudctl acceptance --hardware --endpoint <remote-peer-ip:port>")
+    elif probe["status"] == "PASS":
+        print(" [OK] Physical hardware WAN mesh reachability verified.")
+    else:
+        print(" [FAIL] Target physical endpoint unreachable.")
+    print("=" * 78 + "\n")
+
+    return 0 if probe["status"] in ("PASS", "PENDING") else 1
+
+
 def execute_acceptance(args: argparse.Namespace) -> int:
     """Execute acceptance command and output formatted report."""
+    if getattr(args, "hardware", False) is True:
+        return execute_hardware_acceptance(args)
+
     if getattr(args, "full", False):
         report = run_acceptance_lab(output_dir=getattr(args, "output_dir", None))
     else:

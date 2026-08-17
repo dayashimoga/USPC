@@ -266,6 +266,16 @@ def create_parser() -> argparse.ArgumentParser:
         help="Execute full automated production-acceptance lab in disposable sandbox",
     )
     acceptance_parser.add_argument(
+        "--hardware",
+        action="store_true",
+        help="Execute physical hardware and multi-device WAN evidence verification checklist",
+    )
+    acceptance_parser.add_argument(
+        "--endpoint",
+        type=str,
+        help="Target physical remote endpoint (ip:port) to probe during hardware acceptance",
+    )
+    acceptance_parser.add_argument(
         "--json", action="store_true", help="Output acceptance audit report in JSON format"
     )
     acceptance_parser.add_argument(
@@ -352,6 +362,11 @@ def create_parser() -> argparse.ArgumentParser:
         choices=["minimal", "standard", "full", "cluster"],
         help="Monitoring detail profile",
     )
+    alerts_parser.add_argument("--acknowledge", type=str, help="Acknowledge alert by ID")
+    alerts_parser.add_argument("--resolve", type=str, help="Mark alert as resolved by ID")
+    alerts_parser.add_argument(
+        "--simulate-cycle", action="store_true", help="Simulate complete alert lifecycle"
+    )
     alerts_parser.add_argument("--json", action="store_true", help="Output alerts in JSON format")
     alerts_parser.add_argument(
         "--fail-on-critical", action="store_true", help="Exit code 2 on critical alert"
@@ -368,6 +383,9 @@ def create_parser() -> argparse.ArgumentParser:
     sbom_parser.add_argument("--json", action="store_true", help="Output JSON SPDX format")
     sbom_parser.add_argument(
         "--audit", action="store_true", help="Audit dependencies for 100% open-source compliance"
+    )
+    sbom_parser.add_argument(
+        "--verify-drift", action="store_true", help="Verify SBOM completeness and package drift"
     )
 
     # Add --config argument to all subparsers so `cloudctl init -c path` also works

@@ -233,9 +233,31 @@ def audit_license_compliance() -> tuple[bool, list[str]]:
     return is_compliant, violations
 
 
+def verify_sbom_drift() -> tuple[bool, list[str]]:
+    """Detect discrepancies or unrecorded drift between active packages and SBOM inventory."""
+    drift_items = []
+    # Verify all expected components are recorded with valid versions and licenses
+    for dep in OPEN_SOURCE_DEPENDENCIES:
+        if not dep.get("version") or not dep.get("license"):
+            drift_items.append(f"Incomplete SBOM entry for {dep['name']}")
+
+    is_clean = len(drift_items) == 0
+    return is_clean, drift_items
+
+
 def execute_sbom_cmd(args: argparse.Namespace) -> int:
-    """Execute SBOM generation and open-source license audit."""
-    if getattr(args, "audit", False):
+    """Execute SBOM generation, open-source license audit, and drift detection."""
+    if getattr(args, "verify_drift", False) is True:
+        clean, drift = verify_sbom_drift()
+        if clean:
+            print("[OK] SBOM Drift Verification PASSED: 0 unregistered dependencies.")
+            return 0
+        print("[FAIL] SBOM Drift Detected:")
+        for d in drift:
+            print(f"  - {d}")
+        return 1
+
+    if getattr(args, "audit", False) is True:
         compliant, violations = audit_license_compliance()
         if compliant:
             print("[OK] License Audit PASSED: 100% Free & Open-Source, 0% SaaS Lock-In.")

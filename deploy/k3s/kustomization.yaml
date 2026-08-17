@@ -16,4 +16,6 @@ resources:
   - 08-monitoring-prometheus.yaml
   - 09-monitoring-grafana.yaml
   - 10-monitoring-loki.yaml
+  - 11-monitoring-alertmanager.yaml
+
 

@@ -169,3 +169,63 @@ class NetworkManager:
                         f"-LocalPort {rule.port} -Protocol {rule.protocol.upper()} -Action Allow"
                     )
         return commands
+
+    def probe_hardware_wan(self, target_endpoint: str | None = None) -> dict[str, Any]:
+        """
+        Probe physical host network interfaces, WireGuard adapters, and remote gateway/endpoints.
+        Returns empirical network topology and physical reachability evidence.
+        """
+        import socket
+
+        import psutil
+
+        interfaces: dict[str, Any] = {}
+        active_wg_interfaces: list[str] = []
+
+        addrs = psutil.net_if_addrs()
+        stats = psutil.net_if_stats()
+
+        for iface_name, iface_addrs in addrs.items():
+            is_up = stats.get(iface_name).isup if iface_name in stats else False
+            ip_list = [
+                a.address
+                for a in iface_addrs
+                if a.family in (socket.AF_INET, getattr(socket, "AF_INET6", -1))
+            ]
+            interfaces[iface_name] = {
+                "is_up": is_up,
+                "addresses": ip_list,
+            }
+            if any(
+                wg_tag in iface_name.lower() for wg_tag in ("wg", "wireguard", "tailscale", "utun")
+            ):
+                active_wg_interfaces.append(iface_name)
+
+        endpoint_reachable = False
+        latency_ms = None
+
+        if target_endpoint:
+            import time
+
+            host, _, port_str = target_endpoint.partition(":")
+            port = int(port_str) if port_str.isdigit() else 80
+            t0 = time.perf_counter()
+            try:
+                with socket.create_connection((host, port), timeout=2.0):
+                    endpoint_reachable = True
+                    latency_ms = round((time.perf_counter() - t0) * 1000.0, 2)
+            except Exception:
+                endpoint_reachable = False
+
+        status = "PASS" if endpoint_reachable else ("PENDING" if not target_endpoint else "FAIL")
+
+        return {
+            "status": status,
+            "classification": "HARDWARE-PROVEN" if endpoint_reachable else "HARDWARE-REQUIRED",
+            "physical_interfaces_count": len(interfaces),
+            "wireguard_adapters": active_wg_interfaces,
+            "target_endpoint": target_endpoint or "None (Requires physical peer device)",
+            "endpoint_reachable": endpoint_reachable,
+            "latency_ms": latency_ms,
+            "interfaces": interfaces,
+        }

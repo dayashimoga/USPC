@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: uspc-alertmanager-config
+  namespace: uspc
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['alertname', 'severity']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 1h
+      receiver: 'uspc-admin-receiver'
+    receivers:
+    - name: 'uspc-admin-receiver'
+      webhook_configs:
+      - url: 'http://uspc-media.uspc.svc.cluster.local:8000/api/v1/alerts/webhook'
+        send_resolved: true
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uspc-alertmanager
+  namespace: uspc
+  labels:
+    app: uspc-alertmanager
+    app.kubernetes.io/part-of: uspc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uspc-alertmanager
+  template:
+    metadata:
+      labels:
+        app: uspc-alertmanager
+    spec:
+      containers:
+      - name: alertmanager
+        image: docker.io/prom/alertmanager:v0.27.0
+        args:
+        - "--config.file=/etc/alertmanager/alertmanager.yml"
+        - "--storage.path=/alertmanager"
+        ports:
+        - name: web
+          containerPort: 9093
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+        volumeMounts:
+        - name: config
+          mountPath: /etc/alertmanager
+      volumes:
+      - name: config
+        configMap:
+          name: uspc-alertmanager-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uspc-alertmanager
+  namespace: uspc
+  labels:
+    app: uspc-alertmanager
+spec:
+  selector:
+    app: uspc-alertmanager
+  ports:
+  - name: web
+    port: 9093
+    targetPort: 9093
