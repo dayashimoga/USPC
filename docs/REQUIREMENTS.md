@@ -110,6 +110,6 @@ These cannot be validated without physical hardware:
 
 ## Cross-References
 
-- [Architecture](ARCHITECTURE.md) | [Implementation](IMPLEMENTATION.md) | [Configuration](CONFIGURATION.md)
-- [Security](SECURITY.md) | [Networking](NETWORKING.md) | [Performance](PERFORMANCE.md)
-- [Acceptance](ACCEPTANCE.md) | [Testing](TESTING.md) | [Project Status](PROJECT_STATUS.md)
+- [Architecture](ARCHITECTURE.md) | [Implementation](../IMPLEMENTATION.md) | [Configuration](CONFIGURATION.md)
+- [Security](../SECURITY.md) | [Networking](NETWORKING.md) | [Performance](PERFORMANCE.md)
+- [Acceptance](ACCEPTANCE.md) | [Testing](TESTING.md) | [Project Status](../PROJECT_STATUS.md)

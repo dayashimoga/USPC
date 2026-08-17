@@ -209,4 +209,4 @@ cloudctl config migrate --target-version 0.3.0
 ## Cross-References
 
 - [Architecture](ARCHITECTURE.md) | [Requirements](REQUIREMENTS.md) | [Setup Guides](setup/)
-- [Security](SECURITY.md) | [Monitoring](MONITORING.md) | [Performance](PERFORMANCE.md)
+- [Security](../SECURITY.md) | [Monitoring](MONITORING.md) | [Performance](PERFORMANCE.md)

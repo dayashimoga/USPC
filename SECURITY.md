@@ -135,7 +135,7 @@ Runs on: push to `main`, pull requests, weekly schedule (Sunday 00:00).
 
 ## Exposed Ports
 
-See [Architecture — Ports & Protocols](ARCHITECTURE.md#ports--protocols). In private mode (default), only the Headscale VPN control port is externally reachable.
+See [Architecture — Ports & Protocols](docs/ARCHITECTURE.md#ports--protocols). In private mode (default), only the Headscale VPN control port is externally reachable.
 
 ---
 
@@ -150,5 +150,5 @@ See [Architecture — Ports & Protocols](ARCHITECTURE.md#ports--protocols). In p
 
 ## Cross-References
 
-- [Architecture](ARCHITECTURE.md) | [Networking](NETWORKING.md) | [Configuration](CONFIGURATION.md)
-- [Backup & DR](BACKUP-DR.md) | [Acceptance](ACCEPTANCE.md)
+- [Architecture](docs/ARCHITECTURE.md) | [Networking](docs/NETWORKING.md) | [Configuration](docs/CONFIGURATION.md)
+- [Backup & DR](docs/BACKUP-DR.md) | [Acceptance](docs/ACCEPTANCE.md)

@@ -1,7 +1,7 @@
 {
-  "timestamp": 1786978397.8589373,
+  "timestamp": 1786987075.8205574,
   "rpo_hours": 0.5,
-  "rto_seconds": 0.12,
+  "rto_seconds": 0.1,
   "encryption": "AES-256 (Restic)",
   "integrity_hash": "SHA-256",
   "verified_restore": true,

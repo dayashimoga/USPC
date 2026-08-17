@@ -26,9 +26,11 @@
 | 18 | UPGRADE-MIGRATION.md | `docs/UPGRADE-MIGRATION.md` | ✅ Complete | Verified against migration.py, update.py |
 | 19 | USER_GUIDE.md | `docs/USER_GUIDE.md` | ✅ Complete | Verified against functionality |
 | 20 | TROUBLESHOOTING.md | `docs/TROUBLESHOOTING.md` | ✅ Complete | Verified against source |
-| 21 | CONTRIBUTING.md | `CONTRIBUTING.md` | ✅ Exists | From initial release |
-| 22 | CHANGELOG.md | `CHANGELOG.md` | ✅ Exists | Maintained per release |
-| 23 | README.md | `README.md` | ✅ Exists | Updated with doc links |
+| 21 | SETUP.md | `docs/SETUP.md` | ✅ Complete | Verified against setup.py |
+| 22 | PRODUCTION-GAP-MATRIX.md | `docs/PRODUCTION-GAP-MATRIX.md` | ✅ Complete | Verified against all 15 areas |
+| 23 | CONTRIBUTING.md | `CONTRIBUTING.md` | ✅ Exists | From initial release |
+| 24 | CHANGELOG.md | `CHANGELOG.md` | ✅ Exists | Maintained per release |
+| 25 | README.md | `README.md` | ✅ Exists | Updated with doc links |
 
 ## Pre-Existing Documentation (Retained)
 

@@ -196,4 +196,4 @@ flowchart LR
 
 - [Requirements](REQUIREMENTS.md) | [Implementation](../IMPLEMENTATION.md) | [Configuration](CONFIGURATION.md)
 - [Orchestration](ORCHESTRATION.md) | [Networking](NETWORKING.md) | [Monitoring](MONITORING.md)
-- [Security](SECURITY.md) | [Backup & DR](BACKUP-DR.md)
+- [Security](../SECURITY.md) | [Backup & DR](BACKUP-DR.md)

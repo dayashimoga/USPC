@@ -58,8 +58,11 @@ def generate_production_gap_matrix() -> dict[str, Any]:
         "hardware_dependent_gates": 1,
         "gap_matrix": [
             {
+                "id": "GAP-001",
                 "area": "1. Production Acceptance",
                 "requirement": "Authoritative release gate with truthful evidence classification and non-zero exit on failure",
+                "components": ["src/cloudctl/commands/acceptance.py", "cloudctl CLI"],
+                "fix": "Upgraded cloudctl acceptance --full --strict with automated sandbox validation & 13 report exports",
                 "implementation": "cloudctl acceptance --full --strict with automated sandbox validation",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -68,8 +71,11 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-002",
                 "area": "2. Cross-Platform Automation",
                 "requirement": "Zero-dependency bootstrap for Linux, Windows+WSL2, and macOS",
+                "components": ["src/cloudctl/commands/setup.py", "src/cloudctl/core/detect.py"],
+                "fix": "Idempotent setup runner with dry-run, host detection, and rootless Podman configuration",
                 "implementation": "cloudctl setup (--dry-run, --force, --non-interactive)",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -78,8 +84,11 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-003",
                 "area": "3. Switchable Orchestration",
                 "requirement": "Dual-backend Orchestrator ABC (Podman Appliance default vs K3s Cluster)",
+                "components": ["src/cloudctl/core/orchestrator.py", "deploy/k3s/"],
+                "fix": "Pluggable Orchestrator ABC with runtime switching, node inspection, and declarative manifests",
                 "implementation": "cloudctl orchestrator switch/scale with declarative K3s manifests",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -88,8 +97,11 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-004",
                 "area": "4. Internet / WAN Mesh",
                 "requirement": "Private-by-default WireGuard & Headscale overlay networking with zero public DB exposure",
+                "components": ["src/cloudctl/core/network.py", "Headscale coordination"],
+                "fix": "Headscale configuration engine, firewall port matrix, and peer verification checklist",
                 "implementation": "NetworkManager configuration generator and peer enrollment",
                 "evidence_class": "HARDWARE-PENDING",
                 "risk": "Medium (ISP / router port-forwarding)",
@@ -98,8 +110,15 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "Physical multi-device client enrollment",
             },
             {
+                "id": "GAP-005",
                 "area": "5. Security & Authentication",
                 "requirement": "HMAC token binding, constant-time comparison, token revocation, strict CSP/HSTS headers, secret vault",
+                "components": [
+                    "src/media/auth.py",
+                    "src/media/app.py",
+                    "src/cloudctl/core/secrets.py",
+                ],
+                "fix": "HMAC token system with constant-time check, in-memory revocation registry, and 0600 secret storage",
                 "implementation": "src/media/auth.py, src/media/app.py, SecretManager (0600 mode)",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -108,8 +127,11 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-006",
                 "area": "6. Storage & Disaster Recovery",
                 "requirement": "Encrypted Restic backups, SHA-256 integrity, safe migration bundles, measured RPO/RTO",
+                "components": ["src/cloudctl/core/backup.py", "src/cloudctl/core/storage.py"],
+                "fix": "Restic AES-256 backup manager, dynamic RPO/RTO estimator, and tar-slip-safe migration bundles",
                 "implementation": "BackupManager and MigrationManager with directory traversal protection",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -118,8 +140,14 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-007",
                 "area": "7. Performance & Auto-Tuning",
                 "requirement": "Deterministic 5-stage config precedence, hardware auto-tuning, latency budgets, load profiles",
+                "components": [
+                    "src/cloudctl/core/performance.py",
+                    "src/cloudctl/commands/benchmark.py",
+                ],
+                "fix": "Hardware-driven auto-tuning deriving 5 capacity profiles and latency budget validators",
                 "implementation": "auto_tune_from_hardware(), validate_performance_budgets(), LOAD_PROFILES",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -128,8 +156,15 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-008",
                 "area": "8. Media Streaming Engine",
                 "requirement": "HTTP 206 Partial Content range requests, chunked streaming, thumbnail pipeline, rate limiting",
+                "components": [
+                    "src/media/streaming.py",
+                    "src/media/thumbnails.py",
+                    "src/media/fairness.py",
+                ],
+                "fix": "Range header parser, chunked non-blocking streaming, ConcurrencyManager slot allocator",
                 "implementation": "src/media/streaming.py, src/media/thumbnails.py, ConcurrencyManager",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -138,8 +173,11 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-009",
                 "area": "9. Observability & Monitoring",
                 "requirement": "Multi-tier profiles (MINIMAL to CLUSTER), Prometheus exporter, Alertmanager, alert lifecycle",
+                "components": ["src/cloudctl/core/metrics.py", "src/cloudctl/commands/monitor.py"],
+                "fix": "SQLite time-series MetricsStore, Prometheus exposition endpoint, and terminal monitoring dashboard",
                 "implementation": "cloudctl monitor, cloudctl alerts, Prometheus /metrics, K3s Alertmanager manifest",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -148,8 +186,15 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-010",
                 "area": "10. Resilience & Failure Recovery",
                 "requirement": "Fault injection testing for DB/Redis/storage/corruption, load shedding, graceful degradation",
+                "components": [
+                    "src/media/app.py",
+                    "src/media/worker.py",
+                    "src/cloudctl/core/health.py",
+                ],
+                "fix": "Automated load shedding watchers, Redis-to-SQLite fallback, and subprocess timeout handlers",
                 "implementation": "tests/unit/test_resilience.py, load shedding watchers",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -158,8 +203,11 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-011",
                 "area": "11. Sustained Endurance & Soak",
                 "requirement": "Sustained endurance soak testing to detect memory leaks, descriptor leaks, and latency drift",
+                "components": ["src/cloudctl/core/performance.py"],
+                "fix": "run_soak_test measuring memory RSS drift and latency degradation under sustained load",
                 "implementation": "run_soak_test() in performance.py, cloudctl benchmark --soak",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -168,8 +216,11 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-012",
                 "area": "12. Supply Chain & SBOM",
                 "requirement": "SPDX 2.3 & CycloneDX 1.5 SBOM generators, 100% open-source audit, SBOM drift detection",
+                "components": ["src/cloudctl/commands/sbom_cmd.py"],
+                "fix": "Multi-format SBOM generator with open-source license audit and drift validation",
                 "implementation": "cloudctl sbom (--format cyclonedx, --audit, --verify-drift)",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -178,8 +229,11 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-013",
                 "area": "13. Declarative Config Management",
                 "requirement": "Schema validation, leaf diff, secret masking, atomic import/export, automated version migration",
+                "components": ["src/cloudctl/core/config.py", "config/schema.yaml"],
+                "fix": "ConfigManager with 5-tier resolution, leaf-level provenance diffing, and atomic write transactions",
                 "implementation": "cloudctl config validate/diff/export/import/migrate",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -188,8 +242,11 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-014",
                 "area": "14. Upgrade & Safe Rollback",
                 "requirement": "Pre-flight snapshot, schema migration, failure rollback, backup-before-change",
+                "components": ["src/cloudctl/commands/update.py", "src/cloudctl/core/migration.py"],
+                "fix": "Update workflow with automatic pre-upgrade snapshot and atomic rollback on health-check failure",
                 "implementation": "cloudctl update with pre-update snapshot & health check validation",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -198,8 +255,11 @@ def generate_production_gap_matrix() -> dict[str, Any]:
                 "remaining_dependency": "None",
             },
             {
+                "id": "GAP-015",
                 "area": "15. CI/CD & Test Automation",
                 "requirement": "Full matrix pipeline (>95% coverage, 100% pass rate, Ruff clean, Bandit clean, Trivy/pip-audit clean)",
+                "components": [".github/workflows/"],
+                "fix": "4 hardened GitHub Actions workflows validating tests, coverage, security, formatting, and release bundles",
                 "implementation": ".github/workflows/ (test.yml, security.yml, lint.yml, release.yml)",
                 "evidence_class": "PRODUCTION-PROVEN",
                 "risk": "Low",
@@ -541,7 +601,30 @@ def export_all_production_reports(report: AcceptanceReport, out_path: Path) -> N
         json.dumps(generate_sbom_cyclonedx(), indent=2), encoding="utf-8"
     )
 
-    logger.info(f"Successfully generated all 12 production audit reports in {out_path}")
+    # 13: Production Gap Audit Report
+    gap_audit = {
+        "timestamp": time.time(),
+        "audit_version": "0.5.0",
+        "scope": "15 Production Capability Areas",
+        "matrix": gap_matrix.get("gap_matrix", []),
+        "overall_status": report.overall_status,
+        "readiness_score": report.readiness_score,
+        "total_areas": len(gap_matrix.get("gap_matrix", [])),
+        "pass_count": sum(
+            1 for item in gap_matrix.get("gap_matrix", []) if item.get("status") == "PASS"
+        ),
+        "pending_hardware_count": sum(
+            1 for item in gap_matrix.get("gap_matrix", []) if "HARDWARE" in item.get("status", "")
+        ),
+        "failed_count": sum(
+            1 for item in gap_matrix.get("gap_matrix", []) if item.get("status") == "FAIL"
+        ),
+    }
+    (out_path / "production-gap-audit.json").write_text(
+        json.dumps(gap_audit, indent=2), encoding="utf-8"
+    )
+
+    logger.info(f"Successfully generated all 13 production audit reports in {out_path}")
 
 
 def run_acceptance_lab(output_dir: str | None = None) -> AcceptanceReport:

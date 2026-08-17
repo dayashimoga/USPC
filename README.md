@@ -153,13 +153,15 @@ ruff check src/ tests/
 - [Testing](docs/TESTING.md) — 222 tests, coverage, evidence taxonomy
 - [CI/CD Pipeline](docs/CI-CD.md) — GitHub Actions workflows
 
-### Setup Guides
-- [Linux](docs/setup/linux.md) | [Windows](docs/setup/windows.md) | [macOS](docs/setup/macos.md)
+### Setup & Installation
+- [Installation & Setup Guide](docs/SETUP.md) — One-command bootstrap, prerequisites, and automated lifecycle
+- [Linux Setup](docs/setup/linux.md) | [Windows Setup](docs/setup/windows.md) | [macOS Setup](docs/setup/macos.md)
 
-### User
+### Quality & Governance
+- [Production Gap Matrix](docs/PRODUCTION-GAP-MATRIX.md) — Comprehensive 15-area forensic gap analysis and closure matrix
+- [Documentation Status](DOCUMENTATION_STATUS.md) — Audit matrix of all documentation
 - [User Guide](docs/USER_GUIDE.md) — Getting started, browsing, streaming, uploads
 - [Supported Formats](docs/media/supported-formats.md) — Video, audio, image format matrix
-- [Documentation Status](DOCUMENTATION_STATUS.md) — Audit matrix of all documentation
 
 ---
 
