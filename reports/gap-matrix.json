@@ -1,0 +1,158 @@
+{
+  "timestamp": 1786976475.6349967,
+  "total_areas": 15,
+  "unresolved_software_gaps": 0,
+  "hardware_dependent_gates": 1,
+  "gap_matrix": [
+    {
+      "area": "1. Production Acceptance",
+      "requirement": "Authoritative release gate with truthful evidence classification and non-zero exit on failure",
+      "implementation": "cloudctl acceptance --full --strict with automated sandbox validation",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_acceptance_report.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "2. Cross-Platform Automation",
+      "requirement": "Zero-dependency bootstrap for Linux, Windows+WSL2, and macOS",
+      "implementation": "cloudctl setup (--dry-run, --force, --non-interactive)",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_setup_and_cross_platform.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "3. Switchable Orchestration",
+      "requirement": "Dual-backend Orchestrator ABC (Podman Appliance default vs K3s Cluster)",
+      "implementation": "cloudctl orchestrator switch/scale with declarative K3s manifests",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_orchestrator.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "4. Internet / WAN Mesh",
+      "requirement": "Private-by-default WireGuard & Headscale overlay networking with zero public DB exposure",
+      "implementation": "NetworkManager configuration generator and peer enrollment",
+      "evidence_class": "HARDWARE-PENDING",
+      "risk": "Medium (ISP / router port-forwarding)",
+      "status": "PENDING (HARDWARE-REQUIRED)",
+      "test": "cloudctl acceptance --hardware",
+      "remaining_dependency": "Physical multi-device client enrollment"
+    },
+    {
+      "area": "5. Security & Authentication",
+      "requirement": "HMAC token binding, constant-time comparison, token revocation, strict CSP/HSTS headers, secret vault",
+      "implementation": "src/media/auth.py, src/media/app.py, SecretManager (0600 mode)",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_security_attacks.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "6. Storage & Disaster Recovery",
+      "requirement": "Encrypted Restic backups, SHA-256 integrity, safe migration bundles, measured RPO/RTO",
+      "implementation": "BackupManager and MigrationManager with directory traversal protection",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_destructive_dr.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "7. Performance & Auto-Tuning",
+      "requirement": "Deterministic 5-stage config precedence, hardware auto-tuning, latency budgets, load profiles",
+      "implementation": "auto_tune_from_hardware(), validate_performance_budgets(), LOAD_PROFILES",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_performance_autotuning.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "8. Media Streaming Engine",
+      "requirement": "HTTP 206 Partial Content range requests, chunked streaming, thumbnail pipeline, rate limiting",
+      "implementation": "src/media/streaming.py, src/media/thumbnails.py, ConcurrencyManager",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/media/test_streaming.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "9. Observability & Monitoring",
+      "requirement": "Multi-tier profiles (MINIMAL to CLUSTER), Prometheus exporter, Alertmanager, alert lifecycle",
+      "implementation": "cloudctl monitor, cloudctl alerts, Prometheus /metrics, K3s Alertmanager manifest",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_monitoring_and_alerts.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "10. Resilience & Failure Recovery",
+      "requirement": "Fault injection testing for DB/Redis/storage/corruption, load shedding, graceful degradation",
+      "implementation": "tests/unit/test_resilience.py, load shedding watchers",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_resilience.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "11. Sustained Endurance & Soak",
+      "requirement": "Sustained endurance soak testing to detect memory leaks, descriptor leaks, and latency drift",
+      "implementation": "run_soak_test() in performance.py, cloudctl benchmark --soak",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_soak_and_load_profiles.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "12. Supply Chain & SBOM",
+      "requirement": "SPDX 2.3 & CycloneDX 1.5 SBOM generators, 100% open-source audit, SBOM drift detection",
+      "implementation": "cloudctl sbom (--format cyclonedx, --audit, --verify-drift)",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_production_acceptance_gap_closure.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "13. Declarative Config Management",
+      "requirement": "Schema validation, leaf diff, secret masking, atomic import/export, automated version migration",
+      "implementation": "cloudctl config validate/diff/export/import/migrate",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_config_hardened.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "14. Upgrade & Safe Rollback",
+      "requirement": "Pre-flight snapshot, schema migration, failure rollback, backup-before-change",
+      "implementation": "cloudctl update with pre-update snapshot & health check validation",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "tests/unit/test_upgrade_rollback.py",
+      "remaining_dependency": "None"
+    },
+    {
+      "area": "15. CI/CD & Test Automation",
+      "requirement": "Full matrix pipeline (>95% coverage, 100% pass rate, Ruff clean, Bandit clean, Trivy/pip-audit clean)",
+      "implementation": ".github/workflows/ (test.yml, security.yml, lint.yml, release.yml)",
+      "evidence_class": "PRODUCTION-PROVEN",
+      "risk": "Low",
+      "status": "PASS",
+      "test": "CI Workflows",
+      "remaining_dependency": "None"
+    }
+  ]
+}

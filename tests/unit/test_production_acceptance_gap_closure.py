@@ -177,3 +177,82 @@ def test_alertmanager_manifest_syntax():
     assert "ConfigMap" in kinds
     assert "Deployment" in kinds
     assert "Service" in kinds
+
+
+def test_generate_production_gap_matrix():
+    from cloudctl.commands.acceptance import generate_production_gap_matrix
+
+    gap_data = generate_production_gap_matrix()
+    assert gap_data["total_areas"] == 15
+    assert gap_data["unresolved_software_gaps"] == 0
+    assert gap_data["hardware_dependent_gates"] == 1
+    assert len(gap_data["gap_matrix"]) == 15
+
+    for item in gap_data["gap_matrix"]:
+        assert "area" in item
+        assert "requirement" in item
+        assert "implementation" in item
+        assert "evidence_class" in item
+        assert "status" in item
+
+
+def test_acceptance_strict_mode_and_multi_reports(temp_dir: Path, mock_config_dict: dict):
+    from cloudctl.commands.acceptance import generate_acceptance_report
+
+    cfg_file = temp_dir / "cloud.yaml"
+    cfg_file.write_text(yaml.dump(mock_config_dict), encoding="utf-8")
+    out_dir = temp_dir / "reports"
+
+    # Test report exports with strict=False
+    args = argparse.Namespace(
+        config=str(cfg_file),
+        full=False,
+        hardware=False,
+        strict=False,
+        json=False,
+        output_dir=str(out_dir),
+    )
+    rc = execute_acceptance(args)
+    assert (out_dir / "production-readiness.json").exists()
+    assert (out_dir / "production-readiness.html").exists()
+    assert (out_dir / "gap-matrix.json").exists()
+    assert (out_dir / "test-summary.json").exists()
+
+    # Test strict success when status is ACCEPTED
+    rep_ok = generate_acceptance_report(config_path=str(cfg_file))
+    rep_ok.overall_status = "ACCEPTED"
+    with patch("cloudctl.commands.acceptance.generate_acceptance_report", return_value=rep_ok):
+        args_strict_pass = argparse.Namespace(
+            config=str(cfg_file),
+            full=False,
+            hardware=False,
+            strict=True,
+            json=False,
+            output_dir=None,
+        )
+        assert execute_acceptance(args_strict_pass) == 0
+
+    # Test strict failure when status is REJECTED
+    rep_fail = generate_acceptance_report(config_path=str(cfg_file))
+    rep_fail.overall_status = "REJECTED"
+    with patch("cloudctl.commands.acceptance.generate_acceptance_report", return_value=rep_fail):
+        args_strict_fail = argparse.Namespace(
+            config=str(cfg_file),
+            full=False,
+            hardware=False,
+            strict=True,
+            json=False,
+            output_dir=None,
+        )
+        assert execute_acceptance(args_strict_fail) == 1
+
+        args_json_fail = argparse.Namespace(
+            config=str(cfg_file),
+            full=False,
+            hardware=False,
+            strict=True,
+            json=True,
+            output_dir=None,
+        )
+        assert execute_acceptance(args_json_fail) == 1
+

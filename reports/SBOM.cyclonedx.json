@@ -1,0 +1,295 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:c47b27f6-1eac-5599-9033-9fa26e67ffce",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "name": "uspc",
+      "version": "0.5.0",
+      "type": "application",
+      "licenses": [
+        {
+          "license": {
+            "id": "AGPL-3.0"
+          }
+        }
+      ]
+    }
+  },
+  "components": [
+    {
+      "name": "fastapi",
+      "version": ">=0.100.0",
+      "type": "library",
+      "description": "Media API microservice & REST framework",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "uvicorn",
+      "version": ">=0.23.0",
+      "type": "library",
+      "description": "High-performance ASGI web server",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ]
+    },
+    {
+      "name": "pydantic",
+      "version": ">=2.0.0",
+      "type": "library",
+      "description": "Data validation & settings models",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "pillow",
+      "version": ">=10.0.0",
+      "type": "library",
+      "description": "Image thumbnailing and EXIF parsing",
+      "licenses": [
+        {
+          "license": {
+            "name": "HPND"
+          }
+        }
+      ]
+    },
+    {
+      "name": "pyyaml",
+      "version": ">=6.0.0",
+      "type": "library",
+      "description": "Declarative YAML config parsing",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "jsonschema",
+      "version": ">=4.20.0",
+      "type": "library",
+      "description": "Schema validation and bounds checking",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "name": "psutil",
+      "version": ">=5.9.0",
+      "type": "library",
+      "description": "Hardware and resource metrics collection",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ]
+    },
+    {
+      "name": "cryptography",
+      "version": ">=41.0.0",
+      "type": "library",
+      "description": "Cryptographic tokens & vault security",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 / BSD"
+          }
+        }
+      ]
+    },
+    {
+      "name": "httpx",
+      "version": ">=0.25.0",
+      "type": "library",
+      "description": "Async HTTP client for integration checks",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ]
+    },
+    {
+      "name": "python-multipart",
+      "version": ">=0.0.6",
+      "type": "library",
+      "description": "Multipart form file upload parsing",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ffmpeg",
+      "version": "6.x / 7.x",
+      "type": "binary",
+      "description": "Video transcoding & audio badge extraction",
+      "licenses": [
+        {
+          "license": {
+            "name": "LGPL-2.1+ / GPL-2.0+"
+          }
+        }
+      ]
+    },
+    {
+      "name": "nextcloud",
+      "version": "27.1.4-apache",
+      "type": "container-image",
+      "description": "Authoritative file synchronization & webDAV",
+      "licenses": [
+        {
+          "license": {
+            "name": "AGPL-3.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "postgresql",
+      "version": "16.1-alpine",
+      "type": "container-image",
+      "description": "Relational transactional database",
+      "licenses": [
+        {
+          "license": {
+            "name": "PostgreSQL License"
+          }
+        }
+      ]
+    },
+    {
+      "name": "redis",
+      "version": "7.2-alpine",
+      "type": "container-image",
+      "description": "In-memory cache & locking engine",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ]
+    },
+    {
+      "name": "headscale",
+      "version": "0.22.3",
+      "type": "container-image",
+      "description": "WireGuard P2P VPN mesh coordinator",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ]
+    },
+    {
+      "name": "prometheus",
+      "version": "2.50.0",
+      "type": "container-image",
+      "description": "Self-hosted metrics scraper & time-series TSDB",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "grafana",
+      "version": "10.4.0",
+      "type": "container-image",
+      "description": "Self-hosted telemetry and operational dashboard",
+      "licenses": [
+        {
+          "license": {
+            "name": "AGPL-3.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "loki",
+      "version": "2.9.4",
+      "type": "container-image",
+      "description": "Self-hosted log aggregator & query engine",
+      "licenses": [
+        {
+          "license": {
+            "name": "AGPL-3.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "podman",
+      "version": "4.x / 5.x",
+      "type": "runtime",
+      "description": "Rootless OCI container runtime (Appliance Mode)",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "k3s",
+      "version": "v1.30.2+k3s1",
+      "type": "orchestrator",
+      "description": "Lightweight CNCF Kubernetes (Cluster Mode)",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "restic",
+      "version": "0.16.x",
+      "type": "binary",
+      "description": "Client-side encrypted deduplicated backup engine",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-2-Clause"
+          }
+        }
+      ]
+    }
+  ]
+}

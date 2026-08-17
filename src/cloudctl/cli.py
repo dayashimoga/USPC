@@ -276,13 +276,18 @@ def create_parser() -> argparse.ArgumentParser:
         help="Target physical remote endpoint (ip:port) to probe during hardware acceptance",
     )
     acceptance_parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Fail closed with non-zero exit code if any software acceptance gate or subsystem fails",
+    )
+    acceptance_parser.add_argument(
         "--json", action="store_true", help="Output acceptance audit report in JSON format"
     )
     acceptance_parser.add_argument(
         "--output-dir",
         "-o",
         type=str,
-        help="Export acceptance.json and acceptance.html to directory",
+        help="Export acceptance.json, production-readiness.json/html, and gap-matrix.json to directory",
     )
 
     # config

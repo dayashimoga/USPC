@@ -1,0 +1,205 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "USPC-Universal-Personal-Cloud-Platform",
+  "documentNamespace": "https://github.com/dayashimoga/USPC/spdx/0.5.0",
+  "creationInfo": {
+    "created": "2026-08-17T00:00:00Z",
+    "creators": [
+      "Tool: cloudctl-sbom-0.5.0",
+      "Organization: USPC Community"
+    ]
+  },
+  "packages": [
+    {
+      "name": "fastapi",
+      "SPDXID": "SPDXRef-Package-fastapi",
+      "versionInfo": ">=0.100.0",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "description": "Media API microservice & REST framework",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "uvicorn",
+      "SPDXID": "SPDXRef-Package-uvicorn",
+      "versionInfo": ">=0.23.0",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "description": "High-performance ASGI web server",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "pydantic",
+      "SPDXID": "SPDXRef-Package-pydantic",
+      "versionInfo": ">=2.0.0",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "description": "Data validation & settings models",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "pillow",
+      "SPDXID": "SPDXRef-Package-pillow",
+      "versionInfo": ">=10.0.0",
+      "licenseConcluded": "HPND",
+      "licenseDeclared": "HPND",
+      "description": "Image thumbnailing and EXIF parsing",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "pyyaml",
+      "SPDXID": "SPDXRef-Package-pyyaml",
+      "versionInfo": ">=6.0.0",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "description": "Declarative YAML config parsing",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "jsonschema",
+      "SPDXID": "SPDXRef-Package-jsonschema",
+      "versionInfo": ">=4.20.0",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "description": "Schema validation and bounds checking",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "psutil",
+      "SPDXID": "SPDXRef-Package-psutil",
+      "versionInfo": ">=5.9.0",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "description": "Hardware and resource metrics collection",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "cryptography",
+      "SPDXID": "SPDXRef-Package-cryptography",
+      "versionInfo": ">=41.0.0",
+      "licenseConcluded": "Apache-2.0 / BSD",
+      "licenseDeclared": "Apache-2.0 / BSD",
+      "description": "Cryptographic tokens & vault security",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "httpx",
+      "SPDXID": "SPDXRef-Package-httpx",
+      "versionInfo": ">=0.25.0",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "description": "Async HTTP client for integration checks",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "python-multipart",
+      "SPDXID": "SPDXRef-Package-python-multipart",
+      "versionInfo": ">=0.0.6",
+      "licenseConcluded": "Apache-2.0",
+      "licenseDeclared": "Apache-2.0",
+      "description": "Multipart form file upload parsing",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "ffmpeg",
+      "SPDXID": "SPDXRef-Package-ffmpeg",
+      "versionInfo": "6.x / 7.x",
+      "licenseConcluded": "LGPL-2.1+ / GPL-2.0+",
+      "licenseDeclared": "LGPL-2.1+ / GPL-2.0+",
+      "description": "Video transcoding & audio badge extraction",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "nextcloud",
+      "SPDXID": "SPDXRef-Package-nextcloud",
+      "versionInfo": "27.1.4-apache",
+      "licenseConcluded": "AGPL-3.0",
+      "licenseDeclared": "AGPL-3.0",
+      "description": "Authoritative file synchronization & webDAV",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "postgresql",
+      "SPDXID": "SPDXRef-Package-postgresql",
+      "versionInfo": "16.1-alpine",
+      "licenseConcluded": "PostgreSQL License",
+      "licenseDeclared": "PostgreSQL License",
+      "description": "Relational transactional database",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "redis",
+      "SPDXID": "SPDXRef-Package-redis",
+      "versionInfo": "7.2-alpine",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "description": "In-memory cache & locking engine",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "headscale",
+      "SPDXID": "SPDXRef-Package-headscale",
+      "versionInfo": "0.22.3",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "description": "WireGuard P2P VPN mesh coordinator",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "prometheus",
+      "SPDXID": "SPDXRef-Package-prometheus",
+      "versionInfo": "2.50.0",
+      "licenseConcluded": "Apache-2.0",
+      "licenseDeclared": "Apache-2.0",
+      "description": "Self-hosted metrics scraper & time-series TSDB",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "grafana",
+      "SPDXID": "SPDXRef-Package-grafana",
+      "versionInfo": "10.4.0",
+      "licenseConcluded": "AGPL-3.0",
+      "licenseDeclared": "AGPL-3.0",
+      "description": "Self-hosted telemetry and operational dashboard",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "loki",
+      "SPDXID": "SPDXRef-Package-loki",
+      "versionInfo": "2.9.4",
+      "licenseConcluded": "AGPL-3.0",
+      "licenseDeclared": "AGPL-3.0",
+      "description": "Self-hosted log aggregator & query engine",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "podman",
+      "SPDXID": "SPDXRef-Package-podman",
+      "versionInfo": "4.x / 5.x",
+      "licenseConcluded": "Apache-2.0",
+      "licenseDeclared": "Apache-2.0",
+      "description": "Rootless OCI container runtime (Appliance Mode)",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "k3s",
+      "SPDXID": "SPDXRef-Package-k3s",
+      "versionInfo": "v1.30.2+k3s1",
+      "licenseConcluded": "Apache-2.0",
+      "licenseDeclared": "Apache-2.0",
+      "description": "Lightweight CNCF Kubernetes (Cluster Mode)",
+      "supplier": "OpenSource"
+    },
+    {
+      "name": "restic",
+      "SPDXID": "SPDXRef-Package-restic",
+      "versionInfo": "0.16.x",
+      "licenseConcluded": "BSD-2-Clause",
+      "licenseDeclared": "BSD-2-Clause",
+      "description": "Client-side encrypted deduplicated backup engine",
+      "supplier": "OpenSource"
+    }
+  ]
+}

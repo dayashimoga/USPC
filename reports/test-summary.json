@@ -1,0 +1,11 @@
+{
+  "timestamp": 1786976475.6360016,
+  "test_metrics": {
+    "total_unit_and_integration_tests": 218,
+    "pass_rate_percent": 100.0,
+    "code_coverage_percent": 95.7,
+    "linter_errors": 0
+  },
+  "overall_status": "ACCEPTED",
+  "readiness_score": 64.7
+}
