@@ -10,12 +10,18 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-# Ensure src/ is on sys.path
+# Ensure both repo_root and src/ are on sys.path
 repo_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(repo_root))
 sys.path.insert(0, str(repo_root / "src"))
 
-from src.media.config import MediaConfig
-from src.media.models import MediaDatabase
+try:
+    from media.config import MediaConfig
+    from media.models import MediaDatabase
+except ImportError:
+    from src.media.config import MediaConfig
+    from src.media.models import MediaDatabase
+
 
 
 @pytest.fixture
