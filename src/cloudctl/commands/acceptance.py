@@ -361,7 +361,6 @@ def generate_acceptance_report(config_path: str | None = None) -> AcceptanceRepo
             "code_coverage_percent": 95.66,
             "linter_errors": 0,
         },
-
         verifications=verifications,
         evidence_classification=evidence_classification,
         capacity=capacity,
