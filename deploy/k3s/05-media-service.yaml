@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uspc-media
+  namespace: uspc
+  labels:
+    app: uspc-media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uspc-media
+  template:
+    metadata:
+      labels:
+        app: uspc-media
+    spec:
+      containers:
+        - name: uspc-media
+          image: localhost/uspc-media:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8085
+          env:
+            - name: USPC_HOST
+              value: "0.0.0.0"
+            - name: USPC_PORT
+              value: "8085"
+            - name: USPC_DATA_PATH
+              value: "/data"
+            - name: USPC_CACHE_PATH
+              value: "/cache"
+          volumeMounts:
+            - name: media-data
+              mountPath: /data
+              readOnly: true
+            - name: media-cache
+              mountPath: /cache
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 2000m
+              memory: 2048Mi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8085
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8085
+            initialDelaySeconds: 2
+            periodSeconds: 5
+      volumes:
+        - name: media-data
+          persistentVolumeClaim:
+            claimName: uspc-data-pvc
+        - name: media-cache
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uspc-media
+  namespace: uspc
+spec:
+  selector:
+    app: uspc-media
+  ports:
+    - port: 8085
+      targetPort: 8085

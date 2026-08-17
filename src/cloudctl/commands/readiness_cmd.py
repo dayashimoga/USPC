@@ -136,8 +136,22 @@ def evaluate_readiness(
             passed_checks += 1
             layer_remote = "WARN"
 
+    # Layer 7: Orchestrator Runtime & Scaling Readiness
+    from cloudctl.core.orchestrator import create_orchestrator
+
+    orch = create_orchestrator(config, repo_root=cm_mgr.repo_root)
+    orch_runtime = orch.detect_runtime()
+    total_checks += 1
+    if orch_runtime.get("available", False):
+        passed_checks += 1
+        layer_orch = "PASS"
+    else:
+        blockers.append(f"Orchestrator '{orch.get_mode().value}' runtime is not available.")
+        layer_orch = "FAIL"
+
     layers = {
         "infrastructure": layer_infra,
+        "orchestration": layer_orch,
         "application": layer_app,
         "security": layer_sec,
         "recovery": layer_rec,

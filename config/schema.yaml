@@ -41,6 +41,31 @@ properties:
       admin_email:
         type: "string"
         format: "email"
+  orchestrator:
+    type: "object"
+    additionalProperties: false
+    properties:
+      mode:
+        type: "string"
+        enum: ["appliance", "cluster", "k3s"]
+        default: "appliance"
+      namespace:
+        type: "string"
+        default: "uspc"
+      k3s_version:
+        type: "string"
+        default: "v1.30.2+k3s1"
+      node_role:
+        type: "string"
+        enum: ["server", "agent", "standalone"]
+        default: "server"
+      cluster_token_path:
+        type: "string"
+        default: "~/.uspc/secrets/k3s-token"
+      scaling_policy:
+        type: "string"
+        enum: ["manual", "auto"]
+        default: "manual"
   runtime:
     type: "object"
     additionalProperties: false
@@ -116,6 +141,83 @@ properties:
         minimum: 5
         maximum: 200
         default: 20
+      budgets:
+        type: "object"
+        additionalProperties: false
+        properties:
+          max_listing_p95_ms:
+            type: "number"
+            default: 50
+          max_stream_start_p95_ms:
+            type: "number"
+            default: 100
+          min_upload_throughput_mb_s:
+            type: "number"
+            default: 10
+  monitoring:
+    type: "object"
+    additionalProperties: false
+    properties:
+      enabled:
+        type: "boolean"
+        default: true
+      prometheus_port:
+        type: "integer"
+        minimum: 1024
+        maximum: 65535
+        default: 9090
+      metrics_retention_days:
+        type: "integer"
+        minimum: 1
+        maximum: 365
+        default: 30
+      metrics_max_size_mb:
+        type: "integer"
+        minimum: 10
+        maximum: 10000
+        default: 100
+      alert_cpu_threshold:
+        type: "number"
+        minimum: 10
+        maximum: 100
+        default: 85
+      alert_ram_threshold:
+        type: "number"
+        minimum: 10
+        maximum: 100
+        default: 90
+      alert_disk_threshold:
+        type: "number"
+        minimum: 10
+        maximum: 100
+        default: 90
+  profiles:
+    type: "object"
+    additionalProperties: false
+    properties:
+      active:
+        type: "string"
+        enum: ["auto", "appliance", "cluster", "dev", "test"]
+        default: "auto"
+      environment:
+        type: "string"
+        default: "appliance"
+  tls:
+    type: "object"
+    additionalProperties: false
+    properties:
+      enabled:
+        type: "boolean"
+        default: false
+      cert_path:
+        type: "string"
+        default: ""
+      key_path:
+        type: "string"
+        default: ""
+      auto_provision:
+        type: "boolean"
+        default: true
   network:
     type: "object"
     required:

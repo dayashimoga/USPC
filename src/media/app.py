@@ -88,16 +88,54 @@ def create_app(config: MediaConfig | None = None) -> FastAPI:
     )
 
     @app.middleware("http")
-    async def rate_limit_middleware(request: Request, call_next):
+    async def security_and_rate_limit_middleware(request: Request, call_next):
+        start_time = time.time()
         # Apply rate limiting to API routes
         if request.url.path.startswith("/api/"):
             client_ip = request.client.host if request.client else "127.0.0.1"
             await rate_limiter.check_rate_limit(client_ip)
-        return await call_next(request)
+
+        response = await call_next(request)
+
+        # Inject standard security headers
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+
+        process_time_ms = (time.time() - start_time) * 1000.0
+        response.headers["X-Process-Time-Ms"] = f"{process_time_ms:.2f}"
+        return response
 
     # --------------------------------------------------------------------------
     # API Routes
     # --------------------------------------------------------------------------
+
+    @app.get("/metrics")
+    async def get_metrics():
+        """Prometheus / OpenTelemetry compatible metrics endpoint."""
+        from cloudctl.core.metrics import MetricSnapshot, format_prometheus_metrics
+        from cloudctl.core.performance import collect_live_metrics
+
+        live = collect_live_metrics(data_path=str(config.data_path))
+        snap = MetricSnapshot(
+            timestamp=time.time(),
+            cpu_percent=live.cpu_percent,
+            ram_percent=live.ram_percent,
+            disk_free_gb=live.disk_free_gb,
+            active_streams=concurrency_mgr.get_total_active_streams(),
+            queue_depth=0,
+            error_count=0,
+        )
+        _, total_items = db.list_items(limit=1)
+        extra = {
+            "library_total_items": float(total_items),
+            "media_port": float(config.port),
+        }
+        prom_text = format_prometheus_metrics(snap, extra_gauges=extra)
+        from fastapi.responses import PlainTextResponse
+
+        return PlainTextResponse(prom_text, media_type="text/plain; version=0.0.4")
 
     @app.get("/api/health")
     async def get_health():

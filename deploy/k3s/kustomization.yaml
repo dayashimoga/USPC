@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: uspc-kustomization
+  namespace: uspc
+
+resources:
+  - 00-namespace.yaml
+  - 01-storage-pvc.yaml
+  - 02-postgres.yaml
+  - 03-redis.yaml
+  - 04-nextcloud.yaml
+  - 05-media-service.yaml
+  - 06-headscale.yaml
+  - 07-ingress.yaml

@@ -57,6 +57,18 @@ class ContainerManager:
         res = run_command([self.engine, "info"], timeout=10.0)
         return res.success
 
+    def is_rootless(self) -> bool:
+        """Check if container engine is running in rootless mode."""
+        if self.engine == "podman":
+            res = run_command(["podman", "info", "--format", "{{.Host.Security.Rootless}}"])
+            return "true" in res.stdout.lower() if res.success else True
+        return False
+
+    def list_containers(self) -> list[ContainerStatus]:
+        """List managed USPC containers."""
+        names = ["uspc-postgres", "uspc-redis", "uspc-nextcloud", "uspc-media", "uspc-headscale"]
+        return [self.get_container_status(n) for n in names]
+
     def get_version(self) -> str:
         """Get container engine version."""
         res = run_command([self.engine, "--version"], timeout=5.0)

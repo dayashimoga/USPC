@@ -182,6 +182,27 @@ class ConfigManager:
             "security_impact": security_impact,
         }
 
+    def get_effective_config(self, profile: str | None = None) -> dict[str, Any]:
+        """
+        Load configuration applying environment profile overrides (appliance, cluster, dev, test).
+        """
+        config = self.load_config()
+        active_prof = profile or config.get("profiles", {}).get("active", "auto")
+
+        if active_prof == "dev":
+            config.setdefault("cloud", {})["environment"] = "development"
+            config.setdefault("performance", {})["rate_limit_requests_per_minute"] = 10000
+            config.setdefault("security", {})["enforce_mfa"] = False
+        elif active_prof == "test":
+            config.setdefault("cloud", {})["environment"] = "testing"
+            config.setdefault("performance", {})["rate_limit_requests_per_minute"] = 10000
+        elif active_prof == "cluster":
+            config.setdefault("orchestrator", {})["mode"] = "cluster"
+        elif active_prof == "appliance":
+            config.setdefault("orchestrator", {})["mode"] = "appliance"
+
+        return config
+
     def diff_config(self) -> list[dict[str, Any]]:
         """
         Compare active configuration against schema defaults.

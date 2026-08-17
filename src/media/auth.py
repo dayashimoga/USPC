@@ -10,12 +10,25 @@ from pathlib import Path
 from fastapi import HTTPException, Query, Request, Security, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from cloudctl.core.logging import get_logger
 from cloudctl.utils.validators import is_safe_path
 
+logger = get_logger("media.auth.audit")
 security = HTTPBearer(auto_error=False)
 
 # In-memory revocation registry for active tokens with expiry tracking
 _REVOKED_TOKENS: set[str] = set()
+
+
+def audit_log_auth_event(
+    event_type: str, user_id: str, client_ip: str, item_id: str, success: bool, details: str = ""
+) -> None:
+    """Record a structured security audit trail log entry."""
+    status_str = "SUCCESS" if success else "DENIED"
+    logger.info(
+        f"SECURITY_AUDIT: event={event_type} status={status_str} user={user_id} ip={client_ip} item={item_id} details={details}"
+    )
+
 
 
 def revoke_token(token: str) -> None:

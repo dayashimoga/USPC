@@ -5,6 +5,13 @@ cloud:
   domain: "mycloud.local"
   admin_user: "admin"
   admin_email: "admin@mycloud.local"
+orchestrator:
+  mode: "appliance"
+  namespace: "uspc"
+  k3s_version: "v1.30.2+k3s1"
+  node_role: "server"
+  cluster_token_path: "~/.uspc/secrets/k3s-token"
+  scaling_policy: "manual"
 runtime:
   engine: "auto"
   rootless: true
@@ -22,6 +29,26 @@ performance:
   max_transcode_concurrency: 2
   rate_limit_requests_per_minute: 600
   db_connection_pool_size: 20
+  budgets:
+    max_listing_p95_ms: 50
+    max_stream_start_p95_ms: 100
+    min_upload_throughput_mb_s: 10
+monitoring:
+  enabled: true
+  prometheus_port: 9090
+  metrics_retention_days: 30
+  metrics_max_size_mb: 100
+  alert_cpu_threshold: 85
+  alert_ram_threshold: 90
+  alert_disk_threshold: 90
+profiles:
+  active: "auto"
+  environment: "appliance"
+tls:
+  enabled: false
+  cert_path: ""
+  key_path: ""
+  auto_provision: true
 network:
   mode: "private"
   vpn_subnet: "100.64.0.0/10"

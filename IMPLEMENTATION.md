@@ -76,3 +76,22 @@ This document records the architectural context, design decisions (ADRs), and ra
 - **Decision**: Adopt a strict 8-tier classification taxonomy (`UNIT-PROVEN`, `INTEGRATION-PROVEN`, `CONTAINER-PROVEN`, `VM-PROVEN`, `REAL-NETWORK-PROVEN`, `BROWSER-PROVEN`, `HARDWARE-REQUIRED`, `NOT-TESTED`). Package Playwright browser tests and mesh networking suites into containerized harnesses.
 - **Consequences**: Full transparency regarding verified vs simulated vs hardware-dependent platform capabilities.
 
+### ADR 013: Switchable Orchestrator Abstraction (Podman Appliance vs K3s Cluster)
+- **Status**: Accepted
+- **Context**: Users running a single personal laptop or home server need lightweight, zero-overhead rootless Podman/Docker (Appliance Mode), while multi-server deployments (2+ nodes) require Kubernetes container scheduling, rolling updates, and horizontal scaling (Cluster Mode).
+- **Decision**: Establish an `Orchestrator` base interface with `PodmanBackend` (Appliance Mode, default) and `K3sBackend` (Cluster Mode, declarative manifests). Users switch modes declaratively in `config/defaults.yaml` via `orchestrator.mode: appliance | cluster` or via `cloudctl orchestrator switch <mode>`.
+- **Consequences**: Zero architectural rewriting required when scaling from a single laptop to a multi-node K3s cluster. Complete data portability with shared PVC volume models.
+
+### ADR 014: 100% Free & Open-Source Vendor-Neutral Observability with Prometheus Text Format
+- **Status**: Accepted
+- **Context**: Operational monitoring must remain 100% self-hosted with zero SaaS subscriptions, zero proprietary telemetry agents, and zero third-party cloud lock-in.
+- **Decision**: Expose OpenTelemetry and Prometheus-compatible metrics on `/metrics` endpoint and via `cloudctl metrics|monitor|alerts` using a bounded, self-compacting local SQLite time-series store (<100MB ceiling with automatic rolling retention).
+- **Consequences**: Zero telemetry data leakage, fully functional in offline/LAN environments, native compatibility with standard Prometheus/Grafana or terminal CLI dashboards.
+
+### ADR 015: Configurable Performance Budgets & Low-Latency Range Streaming
+- **Status**: Accepted
+- **Context**: Media streaming and API responses must maintain low latency and deterministic response times without high CPU/RAM overhead or memory leaks.
+- **Decision**: Enforce strict performance budgets (P95 API latency < 50ms, media startup < 100ms, upload throughput >= 10MB/s) combined with chunked HTTP 206 Byte-Range streaming, 416 Range Not Satisfiable validation, response header injection (`X-Process-Time-Ms`, security headers), and adaptive concurrency slots.
+- **Consequences**: Deterministic responsiveness across low-end and high-performance hardware with graceful degradation under resource pressure.
+
+

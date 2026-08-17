@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: headscale
+  namespace: uspc
+  labels:
+    app: headscale
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: headscale
+  template:
+    metadata:
+      labels:
+        app: headscale
+    spec:
+      containers:
+        - name: headscale
+          image: docker.io/headscale/headscale:0.22.3
+          args: ["headscale", "serve"]
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: headscale
+  namespace: uspc
+spec:
+  selector:
+    app: headscale
+  ports:
+    - port: 8080
+      targetPort: 8080

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: uspc
+  labels:
+    app.kubernetes.io/name: uspc
+    app.kubernetes.io/part-of: universal-personal-cloud

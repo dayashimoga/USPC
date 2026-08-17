@@ -213,3 +213,46 @@ class MetricsStore:
             deleted = cursor.rowcount
             conn.commit()
             return deleted
+
+
+def format_prometheus_metrics(
+    snapshot: MetricSnapshot, extra_gauges: dict[str, float] | None = None
+) -> str:
+    """Format a snapshot into standard Prometheus exposition text format."""
+    lines = [
+        "# HELP uspc_cpu_utilization_percent Current CPU utilization percentage.",
+        "# TYPE uspc_cpu_utilization_percent gauge",
+        f"uspc_cpu_utilization_percent {snapshot.cpu_percent:.2f}",
+        "",
+        "# HELP uspc_memory_utilization_percent Current RAM utilization percentage.",
+        "# TYPE uspc_memory_utilization_percent gauge",
+        f"uspc_memory_utilization_percent {snapshot.ram_percent:.2f}",
+        "",
+        "# HELP uspc_disk_free_gigabytes Free disk storage on data volume in GB.",
+        "# TYPE uspc_disk_free_gigabytes gauge",
+        f"uspc_disk_free_gigabytes {snapshot.disk_free_gb:.2f}",
+        "",
+        "# HELP uspc_active_streams Number of active concurrent media streams.",
+        "# TYPE uspc_active_streams gauge",
+        f"uspc_active_streams {snapshot.active_streams}",
+        "",
+        "# HELP uspc_transcoder_queue_depth Pending video/audio transcoding jobs in worker queue.",
+        "# TYPE uspc_transcoder_queue_depth gauge",
+        f"uspc_transcoder_queue_depth {snapshot.queue_depth}",
+        "",
+        "# HELP uspc_errors_total Cumulative or windowed error count.",
+        "# TYPE uspc_errors_total counter",
+        f"uspc_errors_total {snapshot.error_count}",
+    ]
+    if extra_gauges:
+        for k, v in extra_gauges.items():
+            safe_k = k.replace("-", "_").replace(".", "_")
+            lines.extend(
+                [
+                    "",
+                    f"# HELP uspc_{safe_k} Operational metric for {safe_k}.",
+                    f"# TYPE uspc_{safe_k} gauge",
+                    f"uspc_{safe_k} {v}",
+                ]
+            )
+    return "\n".join(lines) + "\n"

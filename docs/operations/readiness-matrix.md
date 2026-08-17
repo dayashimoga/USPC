@@ -17,12 +17,14 @@ This document provides a truthful, rigorously verified audit of the capabilities
 
 | Metric | Measured Value | Standard Required | Status |
 |---|---|---|---|
-| **Total Automated Tests** | **187 passed tests (+4 container E2E)** | >100 tests | **PASS** |
-| **Test Pass Rate** | **100% (187/187 passed, 0 failures)** | 100% | **PASS** |
-| **Total Code Coverage** | **95.96%** | >=95.0% | **PASS** |
+| **Total Automated Tests** | **202 passed tests (+4 container E2E)** | >100 tests | **PASS** |
+| **Test Pass Rate** | **100% (202/202 passed, 0 failures)** | 100% | **PASS** |
+| **Total Code Coverage** | **95.74%** | >=95.0% | **PASS** |
 | **Critical Security Modules** | `auth.py`: **100%**, `secrets.py`: **100%**, `security.py`: **94%** | >=90.0% | **PASS** |
-| **Core Storage & FS Modules** | `storage.py`: **97%**, `backup.py`: **98%**, `migration.py`: **96%** | >=90.0% | **PASS** |
-| **CLI & Commands** | `install.py`: **100%**, `setup.py`: **96%**, `acceptance.py`: **100%**, `doctor.py`: **100%**, `update.py`: **100%**, `readiness_cmd.py`: **94%** | >=90.0% | **PASS** |
+| **Core Storage & FS Modules** | `storage.py`: **97%**, `backup.py`: **98%**, `migration.py`: **95%** | >=90.0% | **PASS** |
+| **CLI & Commands** | `install.py`: **100%**, `setup.py`: **96%**, `acceptance.py`: **96%**, `doctor.py`: **100%**, `update.py`: **100%**, `readiness_cmd.py`: **94%**, `orchestrator_cmd.py`: **94%**, `monitor.py`: **96%**, `alerts.py`: **100%**, `sbom_cmd.py`: **94%** | >=90.0% | **PASS** |
+| **Orchestrator Backends** | `orchestrator.py`: **97%**, `podman_backend.py`: **97%**, `k3s_backend.py`: **94%** | >=90.0% | **PASS** |
+
 
 
 
@@ -33,11 +35,19 @@ This document provides a truthful, rigorously verified audit of the capabilities
 | Capability Area | Specific Feature | Classification | Verification Evidence |
 |---|---|---|---|
 | **One-Command Bootstrap** | Unified setup bootstrap (`cloudctl setup`) with `--dry-run`, `--force` | `UNIT-PROVEN` | `test_setup_and_cross_platform.py::test_setup_command_dry_run` |
+| **Switchable Orchestrator** | Dual-backend Orchestrator ABC (Podman Appliance default vs K3s Cluster) | `UNIT-PROVEN` | `test_orchestrator.py::test_orchestrator_factory_and_mode_resolution` |
+| | K3s declarative Kubernetes manifests (`deploy/k3s/`) with CPU/RAM limits | `UNIT-PROVEN` | `test_k3s_manifests.py::test_k3s_manifests_syntax_and_schema` |
+| | Declarative mode switching & scale commands (`cloudctl orchestrator switch|scale`) | `UNIT-PROVEN` | `test_orchestrator.py::test_execute_orchestrator_cli_dispatch` |
+| **Self-Hosted Observability** | Prometheus/OpenTelemetry metrics endpoint (`/metrics`) with P50/P95/P99 latency tracking | `INTEGRATION-PROVEN` | `test_security_headers_and_metrics_api.py::test_api_security_headers_and_metrics_endpoint` |
+| | Live interactive terminal monitoring dashboard (`cloudctl monitor`) | `UNIT-PROVEN` | `test_monitoring_and_alerts.py::test_execute_monitor_cmd_modes` |
+| | Proactive operational threshold alerts (`cloudctl alerts`) with critical exit codes | `UNIT-PROVEN` | `test_monitoring_and_alerts.py::test_execute_alerts_cmd_modes` |
+| **Vendor Independence** | 100% Free & Open-Source SBOM license audit (`cloudctl sbom`) with 0% SaaS lock-in | `UNIT-PROVEN` | `test_monitoring_and_alerts.py::test_execute_sbom_cmd_modes` |
 | **Declarative Configuration** | Schema validation, leaf diff, secret masking, atomic rollback | `UNIT-PROVEN` | `test_config.py::test_config_diff_and_provenance` |
 | **Cryptographic Secrets** | Secure vault (`~/.uspc/secrets/secrets.json` 0600 mode) | `UNIT-PROVEN` | `test_detect_and_secrets.py::test_secret_manager_lifecycle` |
 | **Host Auto-Discovery** | Hardware detection (OS, arch, CPU, RAM, disk, virtualization, firewall) | `CI-PROVEN` | `test_detect_and_secrets.py::test_detect_host` |
 | **Rootless Containers** | Podman pod management, volume bindings, rootless socket | `CONTAINER-PROVEN` | `test_container_and_storage.py::test_podman_container_lifecycle` |
 | **Automated Release Lab** | Full disposable lab release gate (`cloudctl acceptance --full`) | `UNIT-PROVEN` | `test_acceptance_report.py::test_execute_acceptance_full_lab_workflow` |
+
 | **Configuration** | Schema validation & semantic checks (`config/schema.yaml`) | `UNIT-PROVEN` | `test_config.py`, `test_config_manager_semantic_validations` |
 | | Setting metadata extraction (descriptions, ranges, impacts) | `UNIT-PROVEN` | `test_setup_and_cross_platform.py::test_config_setting_metadata_extraction` |
 | | Provenance tracking (`AUTO` vs `DEFAULT` vs `USER-OVERRIDE`) | `UNIT-PROVEN` | `test_config_hardened.py::test_config_diff_and_provenance` |

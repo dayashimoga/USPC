@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  namespace: uspc
+  labels:
+    app: nextcloud
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      containers:
+        - name: nextcloud
+          image: docker.io/library/nextcloud:27.1.4-apache
+          ports:
+            - containerPort: 80
+          env:
+            - name: POSTGRES_HOST
+              value: "postgres.uspc.svc.cluster.local"
+            - name: POSTGRES_DB
+              value: "nextcloud"
+            - name: POSTGRES_USER
+              value: "nextcloud"
+            - name: REDIS_HOST
+              value: "redis.uspc.svc.cluster.local"
+          volumeMounts:
+            - name: nextcloud-data
+              mountPath: /var/www/html/data
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 2048Mi
+      volumes:
+        - name: nextcloud-data
+          persistentVolumeClaim:
+            claimName: uspc-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud
+  namespace: uspc
+spec:
+  selector:
+    app: nextcloud
+  ports:
+    - port: 8081
+      targetPort: 80

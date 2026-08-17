@@ -291,6 +291,60 @@ def create_parser() -> argparse.ArgumentParser:
         help="Target configuration version (default: 0.3.0)",
     )
 
+    # orchestrator
+    orch_parser = subparsers.add_parser(
+        "orchestrator", help="Orchestration management (Podman Appliance vs K3s Cluster)"
+    )
+    orch_sub = orch_parser.add_subparsers(dest="orchestrator_subcommand")
+    orch_sub.add_parser("status", help="Display active orchestrator and workload status")
+    orch_switch = orch_sub.add_parser("switch", help="Switch between appliance and cluster modes")
+    orch_switch.add_argument(
+        "mode", choices=["appliance", "cluster", "k3s"], help="Target orchestration mode"
+    )
+    orch_nodes = orch_sub.add_parser("nodes", help="List active cluster / appliance nodes")
+    orch_nodes.add_argument("--json", action="store_true", help="Output node info in JSON format")
+    orch_scale = orch_sub.add_parser("scale", help="Scale service replicas in cluster mode")
+    orch_scale.add_argument("service", type=str, help="Target service name")
+    orch_scale.add_argument("replicas", type=int, help="Number of replicas")
+    orch_mf = orch_sub.add_parser("manifests", help="Export declarative orchestration manifests")
+    orch_mf.add_argument(
+        "--output-dir", "-o", type=str, default="deploy/manifests_export", help="Output directory"
+    )
+
+    # monitor
+    mon_parser = subparsers.add_parser(
+        "monitor", help="Live terminal performance & stream monitoring"
+    )
+    mon_parser.add_argument(
+        "--count", "-n", type=int, default=1, help="Number of telemetry samples"
+    )
+    mon_parser.add_argument(
+        "--interval", "-i", type=float, default=2.0, help="Sample interval seconds"
+    )
+    mon_parser.add_argument("--json", action="store_true", help="Output telemetry in JSON format")
+    mon_parser.add_argument(
+        "--prometheus", action="store_true", help="Output in Prometheus exposition format"
+    )
+
+    # alerts
+    alerts_parser = subparsers.add_parser(
+        "alerts", help="Inspect active operational threshold alerts"
+    )
+    alerts_parser.add_argument("--json", action="store_true", help="Output alerts in JSON format")
+    alerts_parser.add_argument(
+        "--fail-on-critical", action="store_true", help="Exit code 2 on critical alert"
+    )
+
+    # sbom
+    sbom_parser = subparsers.add_parser(
+        "sbom", help="Generate Software Bill of Materials & license audit"
+    )
+    sbom_parser.add_argument(
+        "--format", choices=["text", "json"], default="text", help="Output format"
+    )
+    sbom_parser.add_argument("--output", "-o", type=str, help="Save SBOM to destination file")
+    sbom_parser.add_argument("--json", action="store_true", help="Output JSON SPDX format")
+
     # Add --config argument to all subparsers so `cloudctl init -c path` also works
     for sp in subparsers.choices.values():
         sp.add_argument(
@@ -413,6 +467,22 @@ def main(argv: list[str] | None = None) -> int:
             from cloudctl.commands.acceptance import execute_acceptance
 
             return execute_acceptance(args)
+        elif args.command == "orchestrator":
+            from cloudctl.commands.orchestrator_cmd import execute_orchestrator_cmd
+
+            return execute_orchestrator_cmd(args)
+        elif args.command == "monitor":
+            from cloudctl.commands.monitor import execute_monitor_cmd
+
+            return execute_monitor_cmd(args)
+        elif args.command == "alerts":
+            from cloudctl.commands.alerts import execute_alerts_cmd
+
+            return execute_alerts_cmd(args)
+        elif args.command == "sbom":
+            from cloudctl.commands.sbom_cmd import execute_sbom_cmd
+
+            return execute_sbom_cmd(args)
         else:
             parser.print_help()
             return 1
