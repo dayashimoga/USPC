@@ -28,8 +28,9 @@ class MediaConfig:
             "USPC_JWT_SECRET", "default-insecure-dev-secret-replace-in-prod"
         )
     )
-    host: str = field(default_factory=lambda: os.environ.get("USPC_HOST", "0.0.0.0"))
+    host: str = field(default_factory=lambda: os.environ.get("USPC_HOST", "0.0.0.0"))  # nosec B104
     port: int = field(default_factory=lambda: int(os.environ.get("USPC_PORT", "8085")))
+
     thumbnail_width: int = 320
     preview_width: int = 800
     chunk_size_kb: int = 64

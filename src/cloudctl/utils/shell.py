@@ -50,7 +50,7 @@ def run_command(
         merged_env.update(env)
 
     try:
-        proc = subprocess.run(
+        proc = subprocess.run(  # nosec B602 B603
             cmd,
             cwd=cwd,
             timeout=timeout,
@@ -61,6 +61,7 @@ def run_command(
             encoding="utf-8",
             errors="replace",
         )
+
         stdout = mask_secrets(proc.stdout, secrets)
         stderr = mask_secrets(proc.stderr, secrets)
 

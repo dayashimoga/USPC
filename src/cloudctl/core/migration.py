@@ -129,6 +129,7 @@ class MigrationManager:
             with tarfile.open(bundle_file, "r:gz") as tar:
                 # Security: validate all tar members to prevent path traversal (CVE-2007-4559)
                 resolved_target = tmp_root.resolve()
+                safe_members = []
                 for member in tar.getmembers():
                     member_path = (tmp_root / member.name).resolve()
                     if (
@@ -138,7 +139,12 @@ class MigrationManager:
                         raise ValueError(
                             f"Security Alert: Tar slip attempt detected in member '{member.name}'"
                         )
-                tar.extractall(tmp_root)
+                    safe_members.append(member)
+
+                if hasattr(tarfile, "data_filter"):
+                    tar.extractall(tmp_root, filter="data")  # nosec B202
+                else:
+                    tar.extractall(tmp_root, members=safe_members)  # nosec B202
 
             # Validate manifest
             manifest_file = tmp_root / "manifest.json"
