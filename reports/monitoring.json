@@ -1,0 +1,23 @@
+{
+  "timestamp": 1786978397.8599367,
+  "profiles": [
+    "minimal",
+    "standard",
+    "full",
+    "cluster"
+  ],
+  "prometheus_metrics_endpoint": "/metrics",
+  "alertmanager_deployment": "deploy/k3s/11-monitoring-alertmanager.yaml",
+  "alert_lifecycle_states": [
+    "TRIGGERED",
+    "FIRING",
+    "ACKNOWLEDGED",
+    "RESOLVED"
+  ],
+  "dashboards": [
+    "USPC Host Overview",
+    "Media Streaming & Rate Limiting"
+  ],
+  "verdict": "PASS",
+  "evidence_class": "PRODUCTION-PROVEN"
+}

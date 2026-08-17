@@ -1,11 +1,16 @@
 {
-  "timestamp": 1786976475.6360016,
+  "timestamp": 1786978397.8569355,
+  "platform": "windows 10",
+  "architecture": "x86_64",
   "test_metrics": {
-    "total_unit_and_integration_tests": 218,
+    "total_unit_and_integration_tests": 222,
     "pass_rate_percent": 100.0,
-    "code_coverage_percent": 95.7,
+    "code_coverage_percent": 95.66,
     "linter_errors": 0
   },
   "overall_status": "ACCEPTED",
-  "readiness_score": 64.7
+  "readiness_score": 64.7,
+  "verifications_count": 14,
+  "pass_count": 13,
+  "pending_count": 1
 }

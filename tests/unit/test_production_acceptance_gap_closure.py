@@ -212,11 +212,22 @@ def test_acceptance_strict_mode_and_multi_reports(temp_dir: Path, mock_config_di
         json=False,
         output_dir=str(out_dir),
     )
-    rc = execute_acceptance(args)
+    assert execute_acceptance(args) in (0, 1)
+    assert (out_dir / "acceptance.json").exists()
+
+    assert (out_dir / "acceptance.html").exists()
     assert (out_dir / "production-readiness.json").exists()
     assert (out_dir / "production-readiness.html").exists()
     assert (out_dir / "gap-matrix.json").exists()
     assert (out_dir / "test-summary.json").exists()
+    assert (out_dir / "performance.json").exists()
+    assert (out_dir / "resilience.json").exists()
+    assert (out_dir / "dr-rpo-rto.json").exists()
+    assert (out_dir / "upgrade-rollback.json").exists()
+    assert (out_dir / "monitoring.json").exists()
+    assert (out_dir / "security.json").exists()
+    assert (out_dir / "SBOM.spdx.json").exists()
+    assert (out_dir / "SBOM.cyclonedx.json").exists()
 
     # Test strict success when status is ACCEPTED
     rep_ok = generate_acceptance_report(config_path=str(cfg_file))
@@ -255,4 +266,3 @@ def test_acceptance_strict_mode_and_multi_reports(temp_dir: Path, mock_config_di
             output_dir=None,
         )
         assert execute_acceptance(args_json_fail) == 1
-

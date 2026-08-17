@@ -17,14 +17,15 @@ This document provides a truthful, rigorously verified audit of the capabilities
 
 | Metric | Measured Value | Standard Required | Status |
 |---|---|---|---|
-| **Total Automated Tests** | **218 passed tests (+4 container E2E)** | >100 tests | **PASS** |
-| **Test Pass Rate** | **100% (218/218 passed, 0 failures)** | 100% | **PASS** |
-| **Total Code Coverage** | **95.71%** | >=95.0% | **PASS** |
+| **Total Automated Tests** | **222 passed tests (0 skips)** | >100 tests | **PASS** |
+| **Test Pass Rate** | **100% (222/222 passed, 0 failures, 0 skips)** | 100% | **PASS** |
+| **Total Code Coverage** | **95.66%** | >=95.0% | **PASS** |
 | **Critical Security Modules** | `auth.py`: **100%**, `secrets.py`: **100%**, `security.py`: **94%** | >=90.0% | **PASS** |
 | **Core Storage & FS Modules** | `storage.py`: **97%**, `backup.py`: **98%**, `migration.py`: **95%** | >=90.0% | **PASS** |
-| **CLI & Commands** | `install.py`: **100%**, `setup.py`: **96%**, `acceptance.py`: **96%**, `doctor.py`: **100%**, `update.py`: **100%**, `readiness_cmd.py`: **94%**, `orchestrator_cmd.py`: **94%**, `monitor.py`: **96%**, `alerts.py`: **99%**, `sbom_cmd.py`: **96%** | >=90.0% | **PASS** |
+| **CLI & Commands** | `install.py`: **100%**, `setup.py`: **96%**, `acceptance.py`: **96%**, `doctor.py`: **100%**, `update.py`: **100%**, `readiness_cmd.py`: **94%**, `orchestrator_cmd.py`: **94%**, `monitor.py`: **97%**, `alerts.py`: **99%**, `sbom_cmd.py`: **96%** | >=90.0% | **PASS** |
 | **Orchestrator Backends** | `orchestrator.py`: **97%**, `podman_backend.py`: **97%**, `k3s_backend.py`: **94%** | >=90.0% | **PASS** |
-| **Performance & Metrics** | `performance.py`: **95%**, `metrics.py`: **98%**, `benchmark.py`: **100%** | >=90.0% | **PASS** |
+| **Performance & Metrics** | `performance.py`: **94%**, `metrics.py`: **98%**, `benchmark.py`: **100%** | >=90.0% | **PASS** |
+
 
 
 

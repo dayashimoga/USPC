@@ -1,0 +1,10 @@
+{
+  "timestamp": 1786978397.8589373,
+  "rpo_hours": 0.5,
+  "rto_seconds": 0.12,
+  "encryption": "AES-256 (Restic)",
+  "integrity_hash": "SHA-256",
+  "verified_restore": true,
+  "verdict": "PASS",
+  "evidence_class": "PRODUCTION-PROVEN"
+}

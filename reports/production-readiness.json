@@ -1,5 +1,5 @@
 {
-  "timestamp": 1786976475.631893,
+  "timestamp": 1786978397.8419232,
   "platform_target": "windows 10",
   "architecture": "x86_64",
   "overall_status": "ACCEPTED",
@@ -14,9 +14,9 @@
     "external_remote": "PASS"
   },
   "test_metrics": {
-    "total_unit_and_integration_tests": 218,
+    "total_unit_and_integration_tests": 222,
     "pass_rate_percent": 100.0,
-    "code_coverage_percent": 95.7,
+    "code_coverage_percent": 95.66,
     "linter_errors": 0
   },
   "verifications": {
@@ -59,13 +59,13 @@
     "db_pool_size": 50,
     "redis_max_memory_mb": 1024,
     "rate_limit_rpm": 1200,
-    "live_cpu_percent": 24.1,
-    "live_ram_percent": 86.6,
-    "live_disk_free_gb": 4.64
+    "live_cpu_percent": 27.3,
+    "live_ram_percent": 85.3,
+    "live_disk_free_gb": 4.2
   },
   "disaster_recovery_metrics": {
     "rpo_hours": 0.5,
-    "rto_seconds": 15.0,
+    "rto_seconds": 0.12,
     "encryption": "AES-256 (Restic)",
     "integrity_hash": "SHA-256",
     "verified_restore": true
