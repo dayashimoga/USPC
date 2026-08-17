@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>USPC Final Production Acceptance Report</title>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8; --border: #334155; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); padding: 2rem; margin: 0; line-height: 1.6; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .header { background: var(--card); border: 1px solid var(--border); padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
+    .status-badge { background: #ef4444; color: white; padding: 0.4rem 1rem; border-radius: 9999px; font-weight: 700; font-size: 1.1rem; }
+    .badge { color: white; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 12px; }
+    h1, h2, h3 { margin-top: 0; color: var(--text); }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 600; }
+    code { background: #0f172a; padding: 0.2rem 0.4rem; border-radius: 4px; font-family: monospace; }
+    ul { padding-left: 1.25rem; margin: 0.5rem 0; }
+    li { margin-bottom: 0.5rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h1>USPC Production-Acceptance Report</h1>
+          <div style="color:var(--muted);">Platform: windows 10 (x86_64) | Generated: 2026-08-17 10:18:44Z</div>
+        </div>
+        <span class="status-badge">REJECTED (56.2%)</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>6-Layer Subsystem Audit</h2>
+        <table>
+          <thead><tr><th>Subsystem Layer</th><th>Status</th></tr></thead>
+          <tbody><tr><td style='font-weight:600;'>Infrastructure</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td style='font-weight:600;'>Application</td><td><span class='badge' style='background:#ef4444;'>FAIL</span></td></tr><tr><td style='font-weight:600;'>Security</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td style='font-weight:600;'>Recovery</td><td><span class='badge' style='background:#ef4444;'>FAIL</span></td></tr><tr><td style='font-weight:600;'>Observability</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td style='font-weight:600;'>External Remote</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Automated Capability Gates</h2>
+        <table>
+          <thead><tr><th>Capability</th><th>Verdict</th></tr></thead>
+          <tbody><tr><td>One Command Setup</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Declarative Config Provenance</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Cryptographic Hmac And Revocation</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Constant Time Comparison</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Path Traversal Protection</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Concurrency Slot Fairness</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Rate Limiting Precision</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Destructive Dr And Sha256</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Resilience And Load Shedding</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Http 206 Range Streaming</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Containerized Browser E2E</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Zero Vendor Lock In</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 2rem;">
+      <h2>Measured & Calibrated Capacity Profile</h2>
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1rem;">
+        <div style="background:#0f172a; padding:1rem; border-radius:8px;">
+          <div style="color:var(--muted); font-size:0.85rem;">Profile</div>
+          <div style="font-size:1.4rem; font-weight:700;">PERFORMANCE</div>
+        </div>
+        <div style="background:#0f172a; padding:1rem; border-radius:8px;">
+          <div style="color:var(--muted); font-size:0.85rem;">Max Concurrent Streams</div>
+          <div style="font-size:1.4rem; font-weight:700;">40</div>
+        </div>
+        <div style="background:#0f172a; padding:1rem; border-radius:8px;">
+          <div style="color:var(--muted); font-size:0.85rem;">Per-User Max Streams</div>
+          <div style="font-size:1.4rem; font-weight:700;">5</div>
+        </div>
+        <div style="background:#0f172a; padding:1rem; border-radius:8px;">
+          <div style="color:var(--muted); font-size:0.85rem;">Rate Limit</div>
+          <div style="font-size:1.4rem; font-weight:700;">1200 RPM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 2rem;">
+      <h2>Configuration Defaults & Provenance</h2>
+      <table>
+        <thead><tr><th>Key</th><th>Active Value</th><th>Provenance</th><th>Allowed Range</th><th>Security Impact</th></tr></thead>
+        <tbody><tr><td><code>cloud.domain</code></td><td>mycloud.local</td><td><span class='badge' style='background:#6366f1;'>USER-OVERRIDE</span></td><td>Valid FQDN / hostname</td><td>Yes</td></tr><tr><td><code>performance.profile</code></td><td>PERFORMANCE</td><td><span class='badge' style='background:#6366f1;'>AUTO</span></td><td>auto | tiny | small | standard | performance | media</td><td>No</td></tr><tr><td><code>performance.max_concurrent_streams</code></td><td>40</td><td><span class='badge' style='background:#6366f1;'>AUTO</span></td><td>1 - 500</td><td>No</td></tr><tr><td><code>network.mode</code></td><td>private</td><td><span class='badge' style='background:#6366f1;'>DEFAULT</span></td><td>private | public</td><td>Yes</td></tr><tr><td><code>backup.retention_days</code></td><td>30</td><td><span class='badge' style='background:#6366f1;'>DEFAULT</span></td><td>&gt;= 1</td><td>No</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Documented Limitations</h2>
+        <ul><li>Single-node architecture; clustering requires external load-balancer.</li><li>Physical WireGuard routing across distinct WANs requires physical client devices enrolled in Headscale.</li><li>Browser E2E automation runs in containerized Playwright harness to avoid host npm/browser pollution.</li></ul>
+      </div>
+      <div class="card">
+        <h2>Operational Risks</h2>
+        <ul><li>Host disk saturation if automated retention pruning is disabled in configuration.</li><li>Unauthenticated reverse-proxy exposure if network mode is switched to public without valid TLS certs.</li><li>Resource exhaustion on under-provisioned hardware (TINY profile) under heavy concurrent video transcoding.</li></ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

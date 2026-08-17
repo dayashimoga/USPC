@@ -1,0 +1,92 @@
+version: "0.1.0"
+cloud:
+  name: "mycloud"
+  environment: "production"
+  domain: "mycloud.local"
+  admin_user: "admin"
+  admin_email: "admin@mycloud.local"
+runtime:
+  engine: "auto"
+  rootless: true
+  vm_memory_mb: 4096
+  vm_cpus: 2
+storage:
+  data_path: "~/.uspc/data"
+  config_path: "~/.uspc/config"
+  min_free_space_gb: 20
+  external_mounts: []
+performance:
+  profile: "auto"
+  max_concurrent_streams: 10
+  max_streams_per_user: 3
+  max_transcode_concurrency: 2
+  rate_limit_requests_per_minute: 600
+  db_connection_pool_size: 20
+network:
+  mode: "private"
+  vpn_subnet: "100.64.0.0/10"
+  headscale_port: 8080
+  public_http_port: 80
+  public_https_port: 443
+  enable_magic_dns: true
+services:
+  nextcloud:
+    version: "27.1.4-apache"
+    port: 8081
+    memory_limit: "1024M"
+    upload_max_filesize: "16G"
+  postgres:
+    version: "16.1-alpine"
+    port: 5432
+    db_name: "nextcloud"
+    user: "nextcloud"
+  redis:
+    version: "7.2-alpine"
+    port: 6379
+media:
+  enabled: true
+  port: 8085
+  thumbnail_width: 320
+  preview_width: 800
+  max_transcode_jobs: 2
+  chunk_size_kb: 64
+  background_processing: true
+  index_on_upload: true
+  supported_video:
+    - "mp4"
+    - "webm"
+    - "mov"
+    - "mkv"
+    - "avi"
+    - "wmv"
+    - "flv"
+  supported_audio:
+    - "mp3"
+    - "aac"
+    - "m4a"
+    - "flac"
+    - "ogg"
+    - "opus"
+    - "wav"
+    - "wma"
+  supported_image:
+    - "jpg"
+    - "jpeg"
+    - "png"
+    - "webp"
+    - "gif"
+    - "bmp"
+    - "svg"
+    - "tiff"
+backup:
+  enabled: true
+  target_type: "local"
+  target_path: "~/.uspc/backups"
+  retention_days: 30
+  schedule: "0 2 * * *"
+  verify_after_backup: true
+security:
+  enforce_mfa: false
+  auto_security_updates: true
+  firewall_enabled: true
+  tls_enabled: false

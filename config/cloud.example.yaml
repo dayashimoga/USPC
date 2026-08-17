@@ -1,0 +1,199 @@
+# ==============================================================================
+# Universal Personal Cloud Platform (USPC) - Configuration Reference
+# ==============================================================================
+# All settings below define your personal cloud instance.
+# Copy this file to config/cloud.yaml and modify as needed.
+
+version: "0.1.0"
+
+# ------------------------------------------------------------------------------
+# Cloud Instance Identification & Admin
+# ------------------------------------------------------------------------------
+cloud:
+  # Unique alphanumeric identifier for this personal cloud instance
+  name: "mycloud"
+
+  # Environment: production | development | testing
+  environment: "production"
+
+  # Domain or hostname for the personal cloud
+  domain: "mycloud.local"
+
+  # Primary administrator username
+  admin_user: "admin"
+
+  # Primary administrator email address
+  admin_email: "admin@mycloud.local"
+
+# ------------------------------------------------------------------------------
+# Runtime & Virtualization Settings
+# ------------------------------------------------------------------------------
+runtime:
+  # Container engine to use: auto | podman | docker
+  # "auto" detects available engine (prefers Podman, falls back to Docker)
+  engine: "auto"
+
+  # Run containers in rootless mode where supported
+  rootless: true
+
+  # RAM allocated for VM (when running on Windows/macOS via Podman Machine/WSL2)
+  vm_memory_mb: 4096
+
+  # CPU cores allocated for VM
+  vm_cpus: 2
+
+# ------------------------------------------------------------------------------
+# Storage Configuration
+# ------------------------------------------------------------------------------
+storage:
+  # Persistent directory where Nextcloud files, media, and DB data will reside
+  data_path: "~/.uspc/data"
+
+  # Runtime configuration and state directory
+  config_path: "~/.uspc/config"
+
+  # Minimum required free disk space in Gigabytes before installation/operation
+  min_free_space_gb: 20
+
+  # Optional list of external disk mount points (e.g. /mnt/external-drive)
+  external_mounts: []
+
+# ------------------------------------------------------------------------------
+# Network & Access Control
+# ------------------------------------------------------------------------------
+network:
+  # Network access mode: private (VPN-only, default) | public (Reverse Proxy + TLS)
+  mode: "private"
+
+  # Subnet used for the WireGuard / Headscale mesh VPN
+  vpn_subnet: "100.64.0.0/10"
+
+  # Port for self-hosted Headscale VPN coordination server
+  headscale_port: 8080
+
+  # Port for public HTTP (used only if mode is "public")
+  public_http_port: 80
+
+  # Port for public HTTPS (used only if mode is "public")
+  public_https_port: 443
+
+  # Enable MagicDNS inside the private VPN
+  enable_magic_dns: true
+
+# ------------------------------------------------------------------------------
+# Core Cloud Services (Version-Pinned)
+# ------------------------------------------------------------------------------
+services:
+  nextcloud:
+    version: "27.1.4-apache"
+    port: 8081
+    memory_limit: "1024M"
+    upload_max_filesize: "16G"
+
+  postgres:
+    version: "16.1-alpine"
+    port: 5432
+    db_name: "nextcloud"
+    user: "nextcloud"
+
+  redis:
+    version: "7.2-alpine"
+    port: 6379
+
+# ------------------------------------------------------------------------------
+# Media Processing & Streaming Engine
+# ------------------------------------------------------------------------------
+media:
+  # Enable unified media library & streaming microservice
+  enabled: true
+
+  # Web UI & API streaming port
+  port: 8085
+
+  # Thumbnail width in pixels for grid view
+  thumbnail_width: 320
+
+  # Preview width in pixels for modal previews
+  preview_width: 800
+
+  # Maximum concurrent video transcoding background jobs
+  max_transcode_jobs: 2
+
+  # Chunk size in kilobytes for HTTP 206 Partial Content streaming
+  chunk_size_kb: 64
+
+  # Run thumbnail and metadata extraction in background workers
+  background_processing: true
+
+  # Trigger indexing automatically when files are added
+  index_on_upload: true
+
+  # Supported video file extensions
+  supported_video:
+    - "mp4"
+    - "webm"
+    - "mov"
+    - "mkv"
+    - "avi"
+    - "wmv"
+    - "flv"
+
+  # Supported audio file extensions
+  supported_audio:
+    - "mp3"
+    - "aac"
+    - "m4a"
+    - "flac"
+    - "ogg"
+    - "opus"
+    - "wav"
+    - "wma"
+
+  # Supported image file extensions
+  supported_image:
+    - "jpg"
+    - "jpeg"
+    - "png"
+    - "webp"
+    - "gif"
+    - "bmp"
+    - "svg"
+    - "tiff"
+
+# ------------------------------------------------------------------------------
+# Backup & Disaster Recovery (Restic)
+# ------------------------------------------------------------------------------
+backup:
+  # Enable automated encrypted backups
+  enabled: true
+
+  # Destination type: local | external | sftp
+  target_type: "local"
+
+  # Local or external filesystem path for Restic repository
+  target_path: "~/.uspc/backups"
+
+  # Retention policy in days for snapshot pruning
+  retention_days: 30
+
+  # Cron schedule for automated backup execution
+  schedule: "0 2 * * *"
+
+  # Perform cryptographic integrity check (restic check) after each backup
+  verify_after_backup: true
+
+# ------------------------------------------------------------------------------
+# Security Hardening & Compliance
+# ------------------------------------------------------------------------------
+security:
+  # Require Multi-Factor Authentication for cloud accounts
+  enforce_mfa: false
+
+  # Enable automatic package and container security updates
+  auto_security_updates: true
+
+  # Enforce host firewall isolation rules (drop non-VPN ingress)
+  firewall_enabled: true
+
+  # Enforce TLS encryption for web endpoints
+  tls_enabled: false

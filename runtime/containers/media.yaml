@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: uspc-pod
+spec:
+  containers:
+    - name: uspc-media
+      image: uspc-media:latest
+      ports:
+        - containerPort: 8085
+          hostPort: 8085
+      env:
+        - name: USPC_DATA_PATH
+          value: /data/nextcloud
+        - name: USPC_CACHE_PATH
+          value: /data/media_cache
+        - name: USPC_PORT
+          value: "8085"
+      volumeMounts:
+        - name: nextcloud-data
+          mountPath: /data/nextcloud
+          readOnly: true
+        - name: media-cache
+          mountPath: /data/media_cache
+  volumes:
+    - name: nextcloud-data
+      hostPath:
+        path: ~/.uspc/data/nextcloud
+    - name: media-cache
+      hostPath:
+        path: ~/.uspc/data/media_cache

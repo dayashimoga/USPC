@@ -1,0 +1,37 @@
+name: Build & Release Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create Release Bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build Offline Bundle
+        run: |
+          chmod +x cloudctl scripts/*.sh
+          ./cloudctl bundle create --output "uspc-release-${{ github.ref_name }}.tar.gz"
+
+      - name: Generate SBOM
+        run: |
+          ./scripts/sbom.sh
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            uspc-release-${{ github.ref_name }}.tar.gz
+            USPC_SBOM.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

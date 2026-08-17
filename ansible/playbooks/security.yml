@@ -1,0 +1,9 @@
+---
+- name: Apply Host and Container Security Hardening
+  hosts: all
+  tasks:
+    - name: Ensure secrets directory has strict 0700 permissions
+      ansible.builtin.file:
+        path: "~/.uspc/secrets"
+        state: directory
+        mode: '0700'

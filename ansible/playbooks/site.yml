@@ -1,0 +1,16 @@
+---
+- name: USPC Master Orchestration Playbook
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Include Security Hardening
+      ansible.builtin.import_playbook: security.yml
+
+    - name: Include Networking & Headscale
+      ansible.builtin.import_playbook: networking.yml
+
+    - name: Include Nextcloud & Media Stack
+      ansible.builtin.import_playbook: nextcloud.yml
+
+    - name: Include Backup Setup
+      ansible.builtin.import_playbook: backup.yml

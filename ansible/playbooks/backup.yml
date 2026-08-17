@@ -1,0 +1,9 @@
+---
+- name: Configure Automated Restic Backups
+  hosts: all
+  tasks:
+    - name: Ensure backup repository directory exists
+      ansible.builtin.file:
+        path: "~/.uspc/backups"
+        state: directory
+        mode: '0700'

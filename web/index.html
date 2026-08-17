@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USPC Media & Cloud Library</title>
+  <link rel="stylesheet" href="css/media.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app" class="app-layout">
+    <!-- Top Minimal Bar -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="status-dot healthy" title="Cloud Engine Healthy"></span>
+        <span class="brand-title">USPC <strong>Media</strong></span>
+      </div>
+
+      <!-- Search & Filters in 1 Row -->
+      <div class="search-bar-container">
+        <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search-input" placeholder="Search videos, audio, photos, artists..." autocomplete="off">
+        <button id="clear-search-btn" class="icon-btn hidden" title="Clear search">&times;</button>
+      </div>
+
+      <div class="header-actions">
+        <!-- Filter Pills -->
+        <div class="filter-pills">
+          <button class="pill active" data-type="">All</button>
+          <button class="pill" data-type="video">Videos</button>
+          <button class="pill" data-type="audio">Audio</button>
+          <button class="pill" data-type="image">Photos</button>
+        </div>
+
+        <!-- View Switcher -->
+        <button id="view-toggle-btn" class="icon-btn" title="Toggle Grid / List View">
+          <svg id="view-icon-grid" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </button>
+
+        <!-- 1-Click Upload -->
+        <label for="file-upload-input" class="btn btn-primary upload-btn" title="Upload Media File">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Upload</span>
+        </label>
+        <input type="file" id="file-upload-input" class="hidden" multiple accept="video/*,audio/*,image/*">
+      </div>
+    </header>
+
+    <!-- Main Library View Area -->
+    <main class="library-container">
+      <!-- Upload Progress Bar (hidden by default) -->
+      <div id="upload-progress-card" class="upload-card hidden">
+        <div class="upload-info">
+          <span id="upload-filename">Uploading file...</span>
+          <span id="upload-percent">0%</span>
+        </div>
+        <div class="progress-track">
+          <div id="upload-progress-bar" class="progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Quick Stats & Sort Bar -->
+      <div class="library-toolbar">
+        <div class="library-stats" id="library-stats">Loading library...</div>
+        <div class="sort-controls">
+          <label for="sort-select">Sort:</label>
+          <select id="sort-select">
+            <option value="mtime:DESC">Newest First</option>
+            <option value="mtime:ASC">Oldest First</option>
+            <option value="filename:ASC">Name (A-Z)</option>
+            <option value="filename:DESC">Name (Z-A)</option>
+            <option value="size_bytes:DESC">Largest Size</option>
+            <option value="duration_seconds:DESC">Longest Duration</option>
+          </select>
+          <button id="refresh-btn" class="icon-btn" title="Refresh & Sync Disk">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid / List items container -->
+      <div id="media-grid" class="media-grid">
+        <!-- Media item cards dynamically rendered via JavaScript -->
+      </div>
+
+      <!-- Empty State / Loading State -->
+      <div id="empty-state" class="empty-state hidden">
+        <div class="empty-icon">📁</div>
+        <h3>No media files found</h3>
+        <p>Drop video, audio, or image files here or click Upload to get started.</p>
+      </div>
+
+      <div id="loading-spinner" class="loading-state">
+        <div class="spinner"></div>
+        <p>Syncing media library...</p>
+      </div>
+    </main>
+
+    <!-- Persistent Bottom Audio Dock Player -->
+    <div id="audio-dock-player" class="audio-dock-player hidden">
+      <div class="audio-track-info">
+        <div id="audio-dock-art" class="audio-dock-art">🎵</div>
+        <div class="audio-dock-titles">
+          <div id="audio-dock-title" class="track-title">Title</div>
+          <div id="audio-dock-artist" class="track-artist">Artist</div>
+        </div>
+      </div>
+
+      <div class="audio-dock-controls">
+        <div class="audio-buttons">
+          <button id="audio-prev-btn" class="icon-btn" title="Previous (Shift+P)">⏮</button>
+          <button id="audio-play-btn" class="icon-btn play-circle-btn" title="Play/Pause (Space)">▶</button>
+          <button id="audio-next-btn" class="icon-btn" title="Next (Shift+N)">⏭</button>
+        </div>
+        <div class="audio-seek-container">
+          <span id="audio-current-time" class="time-label">0:00</span>
+          <input type="range" id="audio-seek-bar" min="0" max="100" value="0" step="0.1">
+          <span id="audio-total-time" class="time-label">0:00</span>
+        </div>
+      </div>
+
+      <div class="audio-dock-actions">
+        <div class="volume-container">
+          <button id="audio-mute-btn" class="icon-btn" title="Mute (M)">🔊</button>
+          <input type="range" id="audio-volume-bar" min="0" max="1" value="0.8" step="0.05">
+        </div>
+        <a id="audio-dock-download" class="icon-btn" title="Download Audio" download>⬇</a>
+        <button id="audio-close-btn" class="icon-btn" title="Close Player">&times;</button>
+      </div>
+      <audio id="native-audio-element" preload="none"></audio>
+    </div>
+
+    <!-- Video Modal Player Overlay (Instant 1-Click Streaming) -->
+    <div id="video-modal" class="modal-overlay hidden">
+      <div class="video-modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <span class="badge video-badge">VIDEO</span>
+            <span id="video-modal-title" class="modal-title">Video Title</span>
+          </div>
+          <div class="modal-actions">
+            <a id="video-modal-download" class="btn btn-secondary btn-sm" download>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Download</span>
+            </a>
+            <button id="video-modal-close" class="icon-btn close-btn" title="Close (Esc)">&times;</button>
+          </div>
+        </div>
+        <div class="video-player-wrapper">
+          <video id="native-video-element" controls preload="auto" playsinline></video>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Lightbox Modal -->
+    <div id="image-modal" class="modal-overlay hidden">
+      <div class="image-lightbox-dialog">
+        <div class="modal-header">
+          <span id="image-modal-title" class="modal-title">Image Title</span>
+          <div class="modal-actions">
+            <a id="image-modal-download" class="btn btn-secondary btn-sm" download>Download</a>
+            <button id="image-modal-close" class="icon-btn close-btn" title="Close (Esc)">&times;</button>
+          </div>
+        </div>
+        <div class="image-lightbox-wrapper">
+          <img id="image-modal-img" src="" alt="Photo preview">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
