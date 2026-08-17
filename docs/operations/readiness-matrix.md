@@ -17,9 +17,9 @@ This document provides a truthful, rigorously verified audit of the capabilities
 
 | Metric | Measured Value | Standard Required | Status |
 |---|---|---|---|
-| **Total Automated Tests** | **186 passed tests (+4 container E2E)** | >100 tests | **PASS** |
-| **Test Pass Rate** | **100% (186/186 passed, 0 failures)** | 100% | **PASS** |
-| **Total Code Coverage** | **95.81%** | >=95.0% | **PASS** |
+| **Total Automated Tests** | **187 passed tests (+4 container E2E)** | >100 tests | **PASS** |
+| **Test Pass Rate** | **100% (187/187 passed, 0 failures)** | 100% | **PASS** |
+| **Total Code Coverage** | **95.96%** | >=95.0% | **PASS** |
 | **Critical Security Modules** | `auth.py`: **100%**, `secrets.py`: **100%**, `security.py`: **94%** | >=90.0% | **PASS** |
 | **Core Storage & FS Modules** | `storage.py`: **97%**, `backup.py`: **98%**, `migration.py`: **96%** | >=90.0% | **PASS** |
 | **CLI & Commands** | `install.py`: **100%**, `setup.py`: **96%**, `acceptance.py`: **100%**, `doctor.py`: **100%**, `update.py`: **100%**, `readiness_cmd.py`: **94%** | >=90.0% | **PASS** |
@@ -33,10 +33,11 @@ This document provides a truthful, rigorously verified audit of the capabilities
 | Capability Area | Specific Feature | Classification | Verification Evidence |
 |---|---|---|---|
 | **One-Command Bootstrap** | Unified setup bootstrap (`cloudctl setup`) with `--dry-run`, `--force` | `UNIT-PROVEN` | `test_setup_and_cross_platform.py::test_setup_command_dry_run` |
-| | Automated host detection (OS, CPU, RAM, Disk, Engine, Firewall) | `CI-PROVEN` | `test_detect.py`, `test_zenith_coverage.py` |
-| | Rootless Podman / Docker pod creation | `CONTAINER-PROVEN` | `test_container.py`, `test_container_and_storage.py` |
-| | Zero-secret exposure storage (`~/.uspc/secrets/` mode 0600) | `UNIT-PROVEN` | `test_detect_and_secrets.py`, `test_security_hardened.py` |
-| | Idempotent re-run & dry-run validation (`cloudctl setup`, `cloudctl install --dry-run`) | `UNIT-PROVEN` | `test_setup_and_cross_platform.py::test_setup_command_idempotent_execution` |
+| **Declarative Configuration** | Schema validation, leaf diff, secret masking, atomic rollback | `UNIT-PROVEN` | `test_config.py::test_config_diff_and_provenance` |
+| **Cryptographic Secrets** | Secure vault (`~/.uspc/secrets/secrets.json` 0600 mode) | `UNIT-PROVEN` | `test_detect_and_secrets.py::test_secret_manager_lifecycle` |
+| **Host Auto-Discovery** | Hardware detection (OS, arch, CPU, RAM, disk, virtualization, firewall) | `CI-PROVEN` | `test_detect_and_secrets.py::test_detect_host` |
+| **Rootless Containers** | Podman pod management, volume bindings, rootless socket | `CONTAINER-PROVEN` | `test_container_and_storage.py::test_podman_container_lifecycle` |
+| **Automated Release Lab** | Full disposable lab release gate (`cloudctl acceptance --full`) | `UNIT-PROVEN` | `test_acceptance_report.py::test_execute_acceptance_full_lab_workflow` |
 | **Configuration** | Schema validation & semantic checks (`config/schema.yaml`) | `UNIT-PROVEN` | `test_config.py`, `test_config_manager_semantic_validations` |
 | | Setting metadata extraction (descriptions, ranges, impacts) | `UNIT-PROVEN` | `test_setup_and_cross_platform.py::test_config_setting_metadata_extraction` |
 | | Provenance tracking (`AUTO` vs `DEFAULT` vs `USER-OVERRIDE`) | `UNIT-PROVEN` | `test_config_hardened.py::test_config_diff_and_provenance` |

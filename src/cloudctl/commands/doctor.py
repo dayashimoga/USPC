@@ -37,7 +37,7 @@ def execute_doctor(args: argparse.Namespace) -> int:
                         c_name = check.name.split("Container: ")[-1].strip()
                         cm = ContainerManager(config["runtime"]["engine"])
                         cm.start_container(c_name)
-                        print(f"     ↳ Started container {c_name}")
+                        print(f"     -> Started container {c_name}")
 
     if issues_found == 0:
         print(" All diagnostic checks passed! System is operating normally.")

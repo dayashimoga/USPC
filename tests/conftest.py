@@ -23,7 +23,6 @@ except ImportError:
     from src.media.models import MediaDatabase
 
 
-
 @pytest.fixture
 def temp_dir() -> Generator[Path, None, None]:
     """Provide an isolated temporary directory for test operations."""

@@ -39,8 +39,8 @@ cd uspc
 # 2. Automated one-command setup bootstrap (or add --dry-run to simulate)
 ./cloudctl setup
 
-# 3. Verify production-acceptance gate
-./cloudctl acceptance
+# 3. Execute automated production-acceptance lab and generate evidence reports
+./cloudctl acceptance --full --output-dir reports/
 ```
 
 ---
@@ -49,6 +49,7 @@ cd uspc
 
 ```text
 cloudctl setup           # One-command automated bootstrap (--dry-run, --non-interactive, --force)
+cloudctl acceptance      # Automated production-acceptance release gate (--full, --json, --output-dir)
 cloudctl init            # Initialize configuration and security credentials
 cloudctl install         # Full automated container stack installation
 cloudctl start           # Start all cloud containers and services
@@ -65,9 +66,9 @@ cloudctl migrate export  # Export portable migration bundle archive
 cloudctl migrate import  # Import migration bundle onto new machine
 cloudctl config          # Declarative config validate, diff (provenance), export, import, migrate
 cloudctl readiness       # 6-Layer production readiness compliance evaluation (--json)
-cloudctl acceptance      # Automated production-acceptance release gate report (--output-dir reports/)
 cloudctl uninstall       # Cleanly remove containers and networks
 cloudctl logs            # Stream or inspect service logs
+
 cloudctl security-check  # Run comprehensive security audit
 cloudctl test            # Run automated test suite
 cloudctl bundle create   # Create offline installation bundle

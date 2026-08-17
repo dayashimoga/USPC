@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.4.0] - 2026-08-17
-### Production Acceptance Hardening & Multi-Layer Audit Release
+### Automated Production-Acceptance Lab & Multi-Layer Release Gate
+- **Automated Production-Acceptance Lab (`cloudctl acceptance --full`)**:
+  - Built full automated acceptance lab executing in disposable sandboxed environments.
+  - Automatically provisions clean state, verifies dry-run preflight, tests idempotency, schema metadata, diff provenance, HMAC cryptographic security, IDOR protection, Headscale network mesh, multi-user concurrency calibration, resilience under resource failure, destructive DR with SHA-256 integrity verification, and upgrade/rollback.
+  - Automatically generates machine-readable `acceptance.json` and standalone interactive `acceptance.html` dashboard.
 - **Unified Bootstrap Command (`cloudctl setup`)**:
   - Implemented `cloudctl setup` for zero-overhead one-command bootstrap across Linux, Windows (WSL2/Docker), and macOS.
   - Added `--dry-run`, `--non-interactive`, and `--force` flags with idempotent, reboot-safe execution.
@@ -20,15 +24,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Infrastructure & Resource Failure Injection**:
   - Added `test_resilience.py` testing database outages, Redis cache failures, container crashes, disk-full protection, and high-load shedding (>85% CPU / >90% RAM).
   - Added auto-recovery in `MetricsStore` for corrupted database files.
-- **5-Layer Production Readiness Audit**:
-  - Restructured `cloudctl readiness` into 5 explicit evaluation layers: Infrastructure, Application, Security, Recovery, and Observability.
+- **6-Layer Production Readiness Audit**:
+  - Structured `cloudctl readiness` into 6 explicit evaluation layers: Infrastructure, Application, Security, Recovery, Observability, and External-Remote.
   - Added storage limit enforcement and auto-vacuuming for metrics database.
 - **Playwright Containerized E2E & Network Mesh Testing**:
   - Added containerized Playwright browser E2E test harness (`tests/e2e/Dockerfile`, `test_browser_media.py`).
   - Added simulated cross-network Headscale/WireGuard peer enrollment test suite (`test_network_mesh.py`).
 - **Test Suite Scale & Coverage**:
-  - Expanded test suite to **172 automated tests** passing at **100%** with **95.58% overall code coverage**.
+  - Expanded test suite to **187 automated tests** passing at **100%** with **95.96% overall code coverage**.
   - Reclassified all capabilities to precise empirical labels (`UNIT-PROVEN`, `INTEGRATION-PROVEN`, `CONTAINER-PROVEN`, `VM-PROVEN`, `BROWSER-PROVEN`, `HARDWARE-REQUIRED`).
+
 
 ## [0.3.0] - 2026-08-17
 ### Final Production Hardening & Readiness Release

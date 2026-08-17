@@ -8,7 +8,7 @@
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); padding: 2rem; margin: 0; line-height: 1.6; }
     .container { max-width: 1000px; margin: 0 auto; }
     .header { background: var(--card); border: 1px solid var(--border); padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
-    .status-badge { background: #ef4444; color: white; padding: 0.4rem 1rem; border-radius: 9999px; font-weight: 700; font-size: 1.1rem; }
+    .status-badge { background: #10b981; color: white; padding: 0.4rem 1rem; border-radius: 9999px; font-weight: 700; font-size: 1.1rem; }
     .badge { color: white; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
     .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 12px; }
@@ -27,9 +27,9 @@
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <div>
           <h1>USPC Production-Acceptance Report</h1>
-          <div style="color:var(--muted);">Platform: windows 10 (x86_64) | Generated: 2026-08-17 10:18:44Z</div>
+          <div style="color:var(--muted);">Platform: windows 10 (x86_64) | Generated: 2026-08-17 10:59:01Z</div>
         </div>
-        <span class="status-badge">REJECTED (56.2%)</span>
+        <span class="status-badge">ACCEPTED (75.0%)</span>
       </div>
     </div>
 
@@ -38,7 +38,7 @@
         <h2>6-Layer Subsystem Audit</h2>
         <table>
           <thead><tr><th>Subsystem Layer</th><th>Status</th></tr></thead>
-          <tbody><tr><td style='font-weight:600;'>Infrastructure</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td style='font-weight:600;'>Application</td><td><span class='badge' style='background:#ef4444;'>FAIL</span></td></tr><tr><td style='font-weight:600;'>Security</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td style='font-weight:600;'>Recovery</td><td><span class='badge' style='background:#ef4444;'>FAIL</span></td></tr><tr><td style='font-weight:600;'>Observability</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td style='font-weight:600;'>External Remote</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr></tbody>
+          <tbody><tr><td style='font-weight:600;'>Infrastructure</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td style='font-weight:600;'>Application</td><td><span class='badge' style='background:#ef4444;'>FAIL</span></td></tr><tr><td style='font-weight:600;'>Security</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td style='font-weight:600;'>Recovery</td><td><span class='badge' style='background:#ef4444;'>FAIL</span></td></tr><tr><td style='font-weight:600;'>Observability</td><td><span class='badge' style='background:#f59e0b;'>WARN</span></td></tr><tr><td style='font-weight:600;'>External Remote</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr></tbody>
         </table>
       </div>
 
@@ -46,7 +46,7 @@
         <h2>Automated Capability Gates</h2>
         <table>
           <thead><tr><th>Capability</th><th>Verdict</th></tr></thead>
-          <tbody><tr><td>One Command Setup</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Declarative Config Provenance</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Cryptographic Hmac And Revocation</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Constant Time Comparison</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Path Traversal Protection</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Concurrency Slot Fairness</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Rate Limiting Precision</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Destructive Dr And Sha256</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Resilience And Load Shedding</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Http 206 Range Streaming</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Containerized Browser E2E</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Zero Vendor Lock In</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr></tbody>
+          <tbody><tr><td>One Command Setup</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Declarative Config Provenance</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Cryptographic Hmac And Revocation</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Constant Time Comparison</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Path Traversal Protection</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Http 206 Range Streaming</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Containerized Browser E2E</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Concurrency Slot Fairness</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Rate Limiting Precision</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Resilience And Load Shedding</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Destructive Dr And Sha256</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr><tr><td>Zero Vendor Lock In</td><td><span class='badge' style='background:#10b981;'>PASS</span></td></tr></tbody>
         </table>
       </div>
     </div>

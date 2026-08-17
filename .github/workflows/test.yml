@@ -82,7 +82,8 @@ jobs:
       - name: Run Acceptance Audit & Export Evidence
         run: |
           mkdir -p reports
-          cloudctl acceptance --json --output-dir reports/
+          cloudctl acceptance --full --output-dir reports/
+
 
       - name: Upload Acceptance Evidence Artifacts
         uses: actions/upload-artifact@v4

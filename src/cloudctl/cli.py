@@ -249,6 +249,11 @@ def create_parser() -> argparse.ArgumentParser:
         help="Run automated production acceptance audit and print final verdict report",
     )
     acceptance_parser.add_argument(
+        "--full",
+        action="store_true",
+        help="Execute full automated production-acceptance lab in disposable sandbox",
+    )
+    acceptance_parser.add_argument(
         "--json", action="store_true", help="Output acceptance audit report in JSON format"
     )
     acceptance_parser.add_argument(

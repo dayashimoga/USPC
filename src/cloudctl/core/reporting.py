@@ -51,7 +51,7 @@ def print_status_dashboard(
         }.get(check.status, "[?]")
         print(f"  {icon} {check.component:<10} | {check.name:<25} : {check.message}")
         if check.remediation:
-            print(f"      ↳ Remediation: {check.remediation}")
+            print(f"      -> Remediation: {check.remediation}")
 
     print("\n CONTAINERS:")
     print(" -----------")

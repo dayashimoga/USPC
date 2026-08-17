@@ -90,3 +90,29 @@ def test_execute_acceptance_export_html_and_json(tmp_path):
         html_content = html_file.read_text(encoding="utf-8")
         assert "<!DOCTYPE html>" in html_content
         assert "USPC Production-Acceptance Report" in html_content
+
+
+def test_execute_acceptance_full_lab_workflow(tmp_path):
+    """Verify cloudctl acceptance --full executes complete sandbox lab and generates evidence."""
+    with patch("cloudctl.commands.install.execute_install", return_value=0):
+        with patch("cloudctl.commands.acceptance.evaluate_readiness") as mock_eval:
+            mock_eval.return_value = MagicMock(
+                verdict="PRODUCTION_READY",
+                score_percent=100.0,
+                layers={
+                    "infrastructure": "PASS",
+                    "application": "PASS",
+                    "security": "PASS",
+                    "recovery": "PASS",
+                    "observability": "PASS",
+                    "external_remote": "PASS",
+                },
+            )
+
+            out_dir = tmp_path / "lab_reports"
+            args = argparse.Namespace(full=True, json=False, config=None, output_dir=str(out_dir))
+            rc = execute_acceptance(args)
+            assert rc == 0
+
+            assert (out_dir / "acceptance.json").exists()
+            assert (out_dir / "acceptance.html").exists()
