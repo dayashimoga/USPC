@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: uspc
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: uspc
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://uspc-prometheus:9090
+        isDefault: true
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://uspc-loki:3100
+        isDefault: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uspc-grafana
+  namespace: uspc
+  labels:
+    app: uspc-grafana
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: uspc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uspc-grafana
+  template:
+    metadata:
+      labels:
+        app: uspc-grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:10.4.0
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: "admin"
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: uspc-secrets
+                  key: grafana_password
+                  optional: true
+            - name: GF_USERS_ALLOW_SIGN_UP
+              value: "false"
+          ports:
+            - name: http
+              containerPort: 3000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: datasource-volume
+              mountPath: /etc/grafana/provisioning/datasources
+      volumes:
+        - name: datasource-volume
+          configMap:
+            name: grafana-datasources
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uspc-grafana
+  namespace: uspc
+  labels:
+    app: uspc-grafana
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: 3000
+      name: http
+  selector:
+    app: uspc-grafana

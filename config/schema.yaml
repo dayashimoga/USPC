@@ -103,6 +103,14 @@ properties:
         type: "number"
         minimum: 0.1
         default: 20
+      profile:
+        type: "string"
+        enum: ["local", "nfs", "smb", "distributed"]
+        default: "local"
+      ha_mode:
+        type: "string"
+        enum: ["none", "replication", "distributed"]
+        default: "none"
       external_mounts:
         type: "array"
         items:
@@ -116,6 +124,9 @@ properties:
         type: "string"
         enum: ["auto", "tiny", "small", "standard", "performance", "media"]
         default: "auto"
+      auto_tune:
+        type: "boolean"
+        default: true
       max_concurrent_streams:
         type: "integer"
         minimum: 1
@@ -151,6 +162,15 @@ properties:
           max_stream_start_p95_ms:
             type: "number"
             default: 100
+          max_api_p99_ms:
+            type: "number"
+            default: 200
+          max_startup_seconds:
+            type: "number"
+            default: 30
+          max_concurrent_users:
+            type: "integer"
+            default: 50
           min_upload_throughput_mb_s:
             type: "number"
             default: 10
@@ -161,11 +181,35 @@ properties:
       enabled:
         type: "boolean"
         default: true
+      profile:
+        type: "string"
+        enum: ["minimal", "standard", "full", "cluster"]
+        default: "minimal"
       prometheus_port:
         type: "integer"
         minimum: 1024
         maximum: 65535
         default: 9090
+      grafana_port:
+        type: "integer"
+        minimum: 1024
+        maximum: 65535
+        default: 3000
+      loki_port:
+        type: "integer"
+        minimum: 1024
+        maximum: 65535
+        default: 3100
+      scrape_interval_seconds:
+        type: "integer"
+        minimum: 1
+        maximum: 3600
+        default: 15
+      alert_evaluation_interval_seconds:
+        type: "integer"
+        minimum: 1
+        maximum: 3600
+        default: 60
       metrics_retention_days:
         type: "integer"
         minimum: 1

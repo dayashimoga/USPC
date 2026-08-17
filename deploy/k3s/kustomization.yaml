@@ -13,3 +13,7 @@ resources:
   - 05-media-service.yaml
   - 06-headscale.yaml
   - 07-ingress.yaml
+  - 08-monitoring-prometheus.yaml
+  - 09-monitoring-grafana.yaml
+  - 10-monitoring-loki.yaml
+

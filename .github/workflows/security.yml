@@ -10,7 +10,7 @@ on:
 
 jobs:
   security-audit:
-    name: Security Scans
+    name: Security Scans, SBOM & License Audit
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -36,8 +36,23 @@ jobs:
           pip install pip-audit
           pip-audit --desc on
 
-
       - name: Check for Committed Secrets (Trufflehog)
         uses: trufflesecurity/trufflehog@main
         with:
           extra_args: --only-verified
+
+      - name: Generate SPDX 2.3 & CycloneDX 1.5 SBOMs
+        run: |
+          mkdir -p reports
+          cloudctl sbom --format json --output reports/sbom-spdx.json
+          cloudctl sbom --format cyclonedx --output reports/sbom-cyclonedx.json
+
+      - name: Verify 100% Free & Open-Source License Compliance
+        run: |
+          cloudctl sbom --audit
+
+      - name: Upload Security & SBOM Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-sbom-reports
+          path: reports/

@@ -103,19 +103,57 @@ def test_execute_alerts_cmd_modes(temp_dir: Path):
 
 def test_execute_sbom_cmd_modes(temp_dir: Path):
     # Text table mode
-    args_text = argparse.Namespace(format="text", output=None, json=False)
+    args_text = argparse.Namespace(format="text", output=None, json=False, audit=False)
     assert execute_sbom_cmd(args_text) == 0
 
     # JSON mode to stdout
-    args_json = argparse.Namespace(format="json", output=None, json=True)
+    args_json = argparse.Namespace(format="json", output=None, json=True, audit=False)
     assert execute_sbom_cmd(args_json) == 0
 
-    # Output file
+    # CycloneDX 1.5 mode
+    cdx_file = temp_dir / "sbom-cdx.json"
+    args_cdx = argparse.Namespace(format="cyclonedx", output=str(cdx_file), json=False, audit=False)
+    assert execute_sbom_cmd(args_cdx) == 0
+    assert cdx_file.exists()
+    cdx_parsed = json.loads(cdx_file.read_text(encoding="utf-8"))
+    assert cdx_parsed["bomFormat"] == "CycloneDX"
+    assert cdx_parsed["specVersion"] == "1.5"
+
+    # License audit flag
+    args_audit = argparse.Namespace(audit=True)
+    assert execute_sbom_cmd(args_audit) == 0
+
+    # Output file (SPDX)
     out_file = temp_dir / "sbom.json"
-    args_file = argparse.Namespace(format="json", output=str(out_file), json=True)
+    args_file = argparse.Namespace(format="json", output=str(out_file), json=True, audit=False)
     assert execute_sbom_cmd(args_file) == 0
     assert out_file.exists()
 
     sbom_parsed = json.loads(out_file.read_text(encoding="utf-8"))
     assert sbom_parsed["spdxVersion"] == "SPDX-2.3"
     assert len(sbom_parsed["packages"]) >= 15
+
+
+def test_monitor_and_alerts_profiles(mock_config_dict: dict, temp_dir: Path):
+    cfg_file = temp_dir / "cloud.yaml"
+    import yaml
+
+    cfg_file.write_text(yaml.dump(mock_config_dict), encoding="utf-8")
+
+    # Monitor with STANDARD profile (tests IO and Network lines)
+    args_std = argparse.Namespace(
+        config=str(cfg_file),
+        count=1,
+        interval=0.01,
+        json=False,
+        prometheus=False,
+        profile="standard",
+    )
+    assert execute_monitor_cmd(args_std) == 0
+
+    # Alerts with CLUSTER profile
+    with patch("cloudctl.core.metrics.MetricsStore.check_alerts", return_value=[]):
+        args_alerts_clust = argparse.Namespace(
+            json=False, fail_on_critical=False, profile="cluster"
+        )
+        assert execute_alerts_cmd(args_alerts_clust) == 0

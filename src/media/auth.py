@@ -30,7 +30,6 @@ def audit_log_auth_event(
     )
 
 
-
 def revoke_token(token: str) -> None:
     """Explicitly revoke an active token before its expiration."""
     if token:

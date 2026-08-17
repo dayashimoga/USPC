@@ -25,10 +25,18 @@ def test_api_security_headers_and_metrics_endpoint(temp_dir: Path):
     res = client.get("/api/health")
     assert res.status_code == 200
     assert res.headers.get("X-Content-Type-Options") == "nosniff"
-    assert res.headers.get("X-Frame-Options") == "SAMEORIGIN"
+    assert res.headers.get("X-Frame-Options") == "DENY"
     assert res.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
-    assert res.headers.get("X-XSS-Protection") == "1; mode=block"
+    assert "Content-Security-Policy" in res.headers
+    assert "frame-ancestors 'none'" in res.headers.get("Content-Security-Policy", "")
+    assert "Permissions-Policy" in res.headers
+    assert "X-XSS-Protection" not in res.headers
     assert "X-Process-Time-Ms" in res.headers
+
+    # Check HTTPS request triggers HSTS
+    res_https = client.get("/api/health", headers={"X-Forwarded-Proto": "https"})
+    assert res_https.status_code == 200
+    assert "Strict-Transport-Security" in res_https.headers
 
     # Check Prometheus /metrics endpoint
     res_m = client.get("/metrics")
@@ -63,4 +71,3 @@ def test_audit_log_auth_event_execution():
     # Should execute without error
     audit_log_auth_event("LOGIN", "admin", "127.0.0.1", "item-1", True, "successful login")
     audit_log_auth_event("STREAM", "user", "10.0.0.1", "item-2", False, "expired token")
-

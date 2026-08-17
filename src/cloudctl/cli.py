@@ -321,6 +321,11 @@ def create_parser() -> argparse.ArgumentParser:
     mon_parser.add_argument(
         "--interval", "-i", type=float, default=2.0, help="Sample interval seconds"
     )
+    mon_parser.add_argument(
+        "--profile",
+        choices=["minimal", "standard", "full", "cluster"],
+        help="Monitoring detail profile",
+    )
     mon_parser.add_argument("--json", action="store_true", help="Output telemetry in JSON format")
     mon_parser.add_argument(
         "--prometheus", action="store_true", help="Output in Prometheus exposition format"
@@ -329,6 +334,11 @@ def create_parser() -> argparse.ArgumentParser:
     # alerts
     alerts_parser = subparsers.add_parser(
         "alerts", help="Inspect active operational threshold alerts"
+    )
+    alerts_parser.add_argument(
+        "--profile",
+        choices=["minimal", "standard", "full", "cluster"],
+        help="Monitoring detail profile",
     )
     alerts_parser.add_argument("--json", action="store_true", help="Output alerts in JSON format")
     alerts_parser.add_argument(
@@ -340,10 +350,13 @@ def create_parser() -> argparse.ArgumentParser:
         "sbom", help="Generate Software Bill of Materials & license audit"
     )
     sbom_parser.add_argument(
-        "--format", choices=["text", "json"], default="text", help="Output format"
+        "--format", choices=["text", "json", "cyclonedx"], default="text", help="Output format"
     )
     sbom_parser.add_argument("--output", "-o", type=str, help="Save SBOM to destination file")
     sbom_parser.add_argument("--json", action="store_true", help="Output JSON SPDX format")
+    sbom_parser.add_argument(
+        "--audit", action="store_true", help="Audit dependencies for 100% open-source compliance"
+    )
 
     # Add --config argument to all subparsers so `cloudctl init -c path` also works
     for sp in subparsers.choices.values():

@@ -16,15 +16,17 @@ USPC deploys a fully self-hosted, encrypted, VPN-secured personal cloud (Nextclo
 | Capability | Implementation & Technology |
 |---|---|
 | **One-Command Bootstrap** | `cloudctl setup` (idempotent, reboot-safe, with `--dry-run` preflight) |
+| **Switchable Orchestration** | Podman Appliance Mode (default for single server) & K3s Cluster Mode (for 2+ nodes) |
 | **Files & Sync Engine** | Nextcloud Community (version-pinned `27.1.4`) with PostgreSQL 16 & Redis 7.2 |
 | **Media Library & Player** | Unified Photos, Video & Audio streaming microservice (FastAPI + HTML5 + WebP) |
-| **Instant Streaming** | HTTP 206 Partial Content range requests, chunked file I/O, instant seeking |
+| **Instant Streaming** | HTTP 206 Partial Content range requests, chunked file I/O, instant seeking, modern CSP |
 | **Private Mesh Access** | WireGuard + self-hosted Headscale overlay network (zero public port exposure) |
-| **Adaptive Performance** | Automatic hardware profile detection (`TINY`, `SMALL`, `STANDARD`, `PERFORMANCE`, `MEDIA`) |
+| **Observability Stack** | Multi-tier monitoring profiles (`MINIMAL`, `STANDARD`, `FULL`, `CLUSTER`) with Prometheus, Grafana & Loki |
+| **Hardware Auto-Tuning** | Automatic capacity profile derivation (`TINY` to `MEDIA`) and latency budget validation |
 | **Multi-User Scalability** | Per-user stream limits, sliding-window rate limiting, and in-flight deduplication |
 | **Encrypted Backups & DR** | Restic client-side AES-256 encrypted snapshots with integrity verification (`--verify`) |
-| **Production Readiness** | 6-Layer audit engine (`cloudctl readiness`) and automated release gate (`cloudctl acceptance`) |
-| **Zero Vendor Lock-in** | 100% Free & Open-Source, portable migration bundles (`cloudctl migrate`) |
+| **Production Readiness** | 7-Layer audit engine (`cloudctl readiness`) and 12-Gate release lab (`cloudctl acceptance --full`) |
+| **100% FOSS & SBOM** | SPDX 2.3 & CycloneDX 1.5 SBOM generator (`cloudctl sbom`), 0% SaaS vendor lock-in |
 
 ---
 
@@ -34,7 +36,6 @@ USPC deploys a fully self-hosted, encrypted, VPN-secured personal cloud (Nextclo
 # 1. Clone the repository
 git clone https://github.com/dayashimoga/USPC.git
 cd uspc
-
 
 # 2. Automated one-command setup bootstrap (or add --dry-run to simulate)
 ./cloudctl setup
@@ -49,7 +50,11 @@ cd uspc
 
 ```text
 cloudctl setup           # One-command automated bootstrap (--dry-run, --non-interactive, --force)
-cloudctl acceptance      # Automated production-acceptance release gate (--full, --json, --output-dir)
+cloudctl acceptance      # Automated 12-gate production acceptance lab (--full, --json, --output-dir)
+cloudctl orchestrator    # Switchable orchestration (status, switch, nodes, scale, manifests)
+cloudctl monitor         # Live terminal telemetry & observability dashboard (--profile, --prometheus)
+cloudctl alerts          # Inspect active operational threshold alerts (--fail-on-critical, --profile)
+cloudctl sbom            # Generate SPDX/CycloneDX SBOM & license audit (--format cyclonedx, --audit)
 cloudctl init            # Initialize configuration and security credentials
 cloudctl install         # Full automated container stack installation
 cloudctl start           # Start all cloud containers and services
@@ -65,14 +70,25 @@ cloudctl restore         # Restore cloud state from snapshot (--dry-run, --test)
 cloudctl migrate export  # Export portable migration bundle archive
 cloudctl migrate import  # Import migration bundle onto new machine
 cloudctl config          # Declarative config validate, diff (provenance), export, import, migrate
-cloudctl readiness       # 6-Layer production readiness compliance evaluation (--json)
+cloudctl readiness       # 7-Layer production readiness compliance evaluation (--json)
 cloudctl uninstall       # Cleanly remove containers and networks
 cloudctl logs            # Stream or inspect service logs
-
 cloudctl security-check  # Run comprehensive security audit
 cloudctl test            # Run automated test suite
 cloudctl bundle create   # Create offline installation bundle
 ```
+
+---
+
+## Configuration Precedence
+
+USPC applies a deterministic 5-stage configuration precedence:
+1. **`AUTO`**: Hardware-detected physical capacity limits (CPU, RAM, Disk).
+2. **`DEFAULT`**: Base schema defaults from `config/defaults.yaml`.
+3. **`PROFILE`**: Active environment profile (`appliance`, `cluster`, `dev`, `test`).
+4. **`ENVIRONMENT`**: Operating system environment variables (`USPC_*`).
+5. **`USER-OVERRIDE`**: Explicit settings defined in user `cloud.yaml` (highest priority).
+
 
 ---
 

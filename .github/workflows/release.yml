@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    name: Create Release Bundle
+    name: Create Reproducible Release Bundle
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -18,20 +18,28 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Build Offline Bundle
+      - name: Install Dependencies
         run: |
-          chmod +x cloudctl scripts/*.sh
-          ./cloudctl bundle create --output "uspc-release-${{ github.ref_name }}.tar.gz"
+          python -m pip install --upgrade pip "setuptools>=83.0.0" wheel
+          pip install -e ".[dev]"
 
-      - name: Generate SBOM
+      - name: Build Offline Bundle & Manifests
         run: |
-          ./scripts/sbom.sh
+          mkdir -p dist
+          cloudctl bundle create --output "dist/uspc-release-${{ github.ref_name }}.tar.gz"
+          cloudctl sbom --format json --output "dist/uspc-sbom-${{ github.ref_name }}.spdx.json"
+          cloudctl sbom --format cyclonedx --output "dist/uspc-sbom-${{ github.ref_name }}.cdx.json"
+
+      - name: Generate Cryptographic SHA-256 Checksums
+        working-directory: dist
+        run: |
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            uspc-release-${{ github.ref_name }}.tar.gz
-            USPC_SBOM.json
+            dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

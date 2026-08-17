@@ -15,11 +15,13 @@ from cloudctl.core.performance import collect_live_metrics
 logger = get_logger("cmd.monitor")
 
 
-def render_ascii_dashboard(snapshot: Any, summary: dict[str, Any], alerts: list[str]) -> str:
+def render_ascii_dashboard(
+    snapshot: Any, summary: dict[str, Any], alerts: list[str], profile: str = "minimal"
+) -> str:
     """Render a clean, high-density terminal dashboard."""
     lines = []
     lines.append("=" * 68)
-    lines.append("        USPC OBSERVABILITY & SYSTEM MONITORING DASHBOARD")
+    lines.append(f"   USPC OBSERVABILITY & SYSTEM MONITORING DASHBOARD [{profile.upper()}]")
     lines.append("=" * 68)
 
     # CPU bar
@@ -46,6 +48,16 @@ def render_ascii_dashboard(snapshot: Any, summary: dict[str, Any], alerts: list[
     lines.append(
         f" Queue Depth: {snapshot.queue_depth:>6} jobs     | Errors: {snapshot.error_count}"
     )
+
+    # IO and Network for STANDARD/FULL/CLUSTER profiles
+    if profile.lower() in ("standard", "full", "cluster"):
+        lines.append(
+            f" Disk IO    : Read {snapshot.io_read_mb:>5.1f} MB  | Write {snapshot.io_write_mb:>5.1f} MB"
+        )
+        lines.append(
+            f" Network    : Sent {snapshot.net_sent_mb:>5.1f} MB  | Recv {snapshot.net_recv_mb:>5.1f} MB"
+        )
+
     lines.append("-" * 68)
 
     # Health & Bottleneck Assessment
@@ -83,6 +95,9 @@ def execute_monitor_cmd(args: argparse.Namespace) -> int:
     interval = getattr(args, "interval", 2.0)
     as_json = getattr(args, "json", False)
     as_prometheus = getattr(args, "prometheus", False)
+    profile = getattr(args, "profile", None) or config.get("monitoring", {}).get(
+        "profile", "minimal"
+    )
 
     data_path = config.get("storage", {}).get("data_path", "~/.uspc/data")
     for i in range(count):
@@ -95,6 +110,10 @@ def execute_monitor_cmd(args: argparse.Namespace) -> int:
             active_streams=live.active_streams,
             queue_depth=live.queue_depth,
             error_count=0,
+            io_read_mb=getattr(live, "io_read_mb", 0.0),
+            io_write_mb=getattr(live, "io_write_mb", 0.0),
+            net_sent_mb=getattr(live, "net_sent_mb", 0.0),
+            net_recv_mb=getattr(live, "net_recv_mb", 0.0),
         )
         ms.record_snapshot(snap)
 
@@ -107,13 +126,14 @@ def execute_monitor_cmd(args: argparse.Namespace) -> int:
         elif as_json:
             data = {
                 "timestamp": snap.timestamp,
+                "profile": profile,
                 "current": snap.__dict__,
                 "summary_1h": summary,
                 "alerts": alerts,
             }
             print(json.dumps(data, indent=2))
         else:
-            dashboard = render_ascii_dashboard(snap, summary, alerts)
+            dashboard = render_ascii_dashboard(snap, summary, alerts, profile=profile)
             print(dashboard)
 
         if i < count - 1:

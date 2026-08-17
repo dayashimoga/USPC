@@ -184,10 +184,24 @@ class ConfigManager:
 
     def get_effective_config(self, profile: str | None = None) -> dict[str, Any]:
         """
-        Load configuration applying environment profile overrides (appliance, cluster, dev, test).
+        Load configuration applying deterministic 5-tier precedence:
+        AUTO -> DEFAULT -> PROFILE -> ENVIRONMENT -> USER-OVERRIDE
         """
-        config = self.load_config()
-        active_prof = profile or config.get("profiles", {}).get("active", "auto")
+        import os
+
+        # 1. Base defaults
+        defaults = self.load_defaults()
+        config = deepcopy(defaults)
+
+        # 2. User file overrides if present
+        user_file_config = load_yaml(self.config_path) if self.config_path.exists() else {}
+
+        # 3. Profile overrides
+        active_prof = (
+            profile
+            or user_file_config.get("profiles", {}).get("active")
+            or config.get("profiles", {}).get("active", "auto")
+        )
 
         if active_prof == "dev":
             config.setdefault("cloud", {})["environment"] = "development"
@@ -198,8 +212,25 @@ class ConfigManager:
             config.setdefault("performance", {})["rate_limit_requests_per_minute"] = 10000
         elif active_prof == "cluster":
             config.setdefault("orchestrator", {})["mode"] = "cluster"
+            config.setdefault("monitoring", {})["profile"] = "cluster"
         elif active_prof == "appliance":
             config.setdefault("orchestrator", {})["mode"] = "appliance"
+
+        # 4. Environment variable overrides (USPC_*)
+        env_mappings = {
+            "USPC_ORCHESTRATOR_MODE": ("orchestrator", "mode"),
+            "USPC_ENVIRONMENT": ("cloud", "environment"),
+            "USPC_DATA_PATH": ("storage", "data_path"),
+            "USPC_MONITORING_PROFILE": ("monitoring", "profile"),
+            "USPC_STORAGE_PROFILE": ("storage", "profile"),
+        }
+        for env_var, (section, key) in env_mappings.items():
+            if env_var in os.environ:
+                config.setdefault(section, {})[key] = os.environ[env_var]
+
+        # 5. Explicit user configuration file overrides (highest priority)
+        if user_file_config:
+            config = deep_merge(config, user_file_config)
 
         return config
 

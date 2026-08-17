@@ -21,9 +21,12 @@ storage:
   data_path: "~/.uspc/data"
   config_path: "~/.uspc/config"
   min_free_space_gb: 20
+  profile: "local"
+  ha_mode: "none"
   external_mounts: []
 performance:
   profile: "auto"
+  auto_tune: true
   max_concurrent_streams: 10
   max_streams_per_user: 3
   max_transcode_concurrency: 2
@@ -32,15 +35,24 @@ performance:
   budgets:
     max_listing_p95_ms: 50
     max_stream_start_p95_ms: 100
+    max_api_p99_ms: 200
+    max_startup_seconds: 30
+    max_concurrent_users: 50
     min_upload_throughput_mb_s: 10
 monitoring:
   enabled: true
+  profile: "minimal"
   prometheus_port: 9090
+  grafana_port: 3000
+  loki_port: 3100
+  scrape_interval_seconds: 15
+  alert_evaluation_interval_seconds: 60
   metrics_retention_days: 30
   metrics_max_size_mb: 100
   alert_cpu_threshold: 85
   alert_ram_threshold: 90
   alert_disk_threshold: 90
+
 profiles:
   active: "auto"
   environment: "appliance"

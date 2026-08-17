@@ -7,6 +7,7 @@ import shutil
 import time
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import psutil
 
@@ -356,5 +357,96 @@ def run_stress_test(
                 p95_latency_ms=p95,
             )
         )
+
+    return results
+
+
+def auto_tune_from_hardware(base_config: dict | None = None) -> dict:
+    """Auto-tune performance, concurrency, pool sizes, and cache limits from host hardware."""
+    host = detect_host()
+    ram_gb = getattr(host, "total_ram_gb", 4.0)
+    cpu_cores = getattr(host, "cpu_cores", 2)
+
+    if ram_gb < 2.0 or cpu_cores <= 1:
+        prof_name = "TINY"
+    elif ram_gb < 4.0:
+        prof_name = "SMALL"
+    elif ram_gb < 8.0:
+        prof_name = "STANDARD"
+    elif ram_gb < 16.0:
+        prof_name = "PERFORMANCE"
+    else:
+        prof_name = "MEDIA"
+
+    profile = PROFILES[prof_name]
+    tuned = {
+        "profile": prof_name.lower(),
+        "max_concurrent_streams": profile.max_concurrent_streams,
+        "max_streams_per_user": profile.max_streams_per_user,
+        "max_transcode_concurrency": profile.max_transcode_jobs,
+        "rate_limit_requests_per_minute": profile.rate_limit_rpm,
+        "db_connection_pool_size": profile.db_connection_pool,
+        "redis_max_memory_mb": profile.redis_max_memory_mb,
+        "chunk_size_kb": profile.chunk_size_kb,
+    }
+
+    if base_config and "performance" in base_config:
+        # Preserve explicit user overrides if present
+        for k, v in base_config["performance"].items():
+            if k in tuned and v is not None:
+                tuned[k] = v
+
+    return tuned
+
+
+def validate_performance_budgets(config: dict, measurements: dict[str, float]) -> dict[str, Any]:
+    """Validate measured benchmark metrics against configured performance budgets."""
+    budgets = config.get("performance", {}).get("budgets", {})
+    results: dict[str, Any] = {
+        "passed": True,
+        "violations": [],
+        "checks": {},
+    }
+
+    checks = [
+        ("max_listing_p95_ms", "listing_p95_ms", lambda measured, budget: measured <= budget, "ms"),
+        (
+            "max_stream_start_p95_ms",
+            "stream_start_p95_ms",
+            lambda measured, budget: measured <= budget,
+            "ms",
+        ),
+        ("max_api_p99_ms", "api_p99_ms", lambda measured, budget: measured <= budget, "ms"),
+        (
+            "max_startup_seconds",
+            "startup_seconds",
+            lambda measured, budget: measured <= budget,
+            "s",
+        ),
+        (
+            "min_upload_throughput_mb_s",
+            "upload_throughput_mb_s",
+            lambda measured, budget: measured >= budget,
+            "MB/s",
+        ),
+    ]
+
+    for budget_key, measured_key, comparator, unit in checks:
+        budget_val = budgets.get(budget_key)
+        measured_val = measurements.get(measured_key)
+
+        if budget_val is not None and measured_val is not None:
+            is_ok = comparator(measured_val, budget_val)
+            results["checks"][budget_key] = {
+                "budget": budget_val,
+                "measured": measured_val,
+                "unit": unit,
+                "passed": is_ok,
+            }
+            if not is_ok:
+                results["passed"] = False
+                results["violations"].append(
+                    f"Budget '{budget_key}' breached: measured {measured_val}{unit} exceeds budget {budget_val}{unit}"
+                )
 
     return results

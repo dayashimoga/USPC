@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uspc-loki
+  namespace: uspc
+  labels:
+    app: uspc-loki
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/part-of: uspc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uspc-loki
+  template:
+    metadata:
+      labels:
+        app: uspc-loki
+    spec:
+      containers:
+        - name: loki
+          image: grafana/loki:2.9.4
+          ports:
+            - name: http
+              containerPort: 3100
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uspc-loki
+  namespace: uspc
+  labels:
+    app: uspc-loki
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3100
+      targetPort: 3100
+      name: http
+  selector:
+    app: uspc-loki

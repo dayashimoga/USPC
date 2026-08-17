@@ -94,4 +94,23 @@ This document records the architectural context, design decisions (ADRs), and ra
 - **Decision**: Enforce strict performance budgets (P95 API latency < 50ms, media startup < 100ms, upload throughput >= 10MB/s) combined with chunked HTTP 206 Byte-Range streaming, 416 Range Not Satisfiable validation, response header injection (`X-Process-Time-Ms`, security headers), and adaptive concurrency slots.
 - **Consequences**: Deterministic responsiveness across low-end and high-performance hardware with graceful degradation under resource pressure.
 
+### ADR 016: Modern Security Headers & Content Security Policy (CSP)
+- **Status**: Accepted
+- **Context**: Legacy `X-XSS-Protection: 1; mode=block` is deprecated by W3C and modern browsers and can introduce cross-site leak vulnerabilities.
+- **Decision**: Deprecate and remove `X-XSS-Protection`. Implement strict Content Security Policy (`frame-ancestors 'none'`, explicit script/style/media origins), Permissions-Policy, HSTS for HTTPS connections, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and cache control directives.
+- **Consequences**: Enhanced client-side attack defense without breaking legitimate media streaming, audio playback, or UI interactivity.
+
+### ADR 017: Multi-Tier Monitoring Profiles & Bundled Observability Stack
+- **Status**: Accepted
+- **Context**: Low-resource edge servers (TINY/SMALL) cannot tolerate heavyweight telemetry daemon overhead, while enterprise clusters require full metrics, log aggregation, and tracing.
+- **Decision**: Define 4 distinct monitoring profiles (`MINIMAL` built-in zero-dependency `cloudctl monitor`, `STANDARD` Prometheus+Grafana, `FULL` Prometheus+Grafana+Loki+Tempo, `CLUSTER` K3s cluster-wide exporter). Provide declarative Kubernetes manifests in `deploy/k3s/` for Prometheus, Grafana, and Loki.
+- **Consequences**: Zero performance penalty on single-laptop appliances while offering turn-key observability for multi-node deployments.
+
+### ADR 018: Performance Auto-Tuning & Deterministic 5-Stage Precedence
+- **Status**: Accepted
+- **Context**: Resource constraints require intelligent defaults based on physical CPU/RAM capacity while respecting user customizations and container environments.
+- **Decision**: Implement `auto_tune_from_hardware()` and enforce a strict 5-stage configuration precedence: `AUTO -> DEFAULT -> PROFILE -> ENVIRONMENT -> USER-OVERRIDE`. Validate runtime latency against configurable performance budget gates in acceptance tests.
+- **Consequences**: Automatic right-sizing for any hardware profile from Raspberry Pi to multi-socket NVMe servers.
+
+
 

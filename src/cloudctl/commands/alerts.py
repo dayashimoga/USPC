@@ -16,9 +16,11 @@ def execute_alerts_cmd(args: argparse.Namespace) -> int:
     ms = MetricsStore()
     alerts = ms.check_alerts()
     summary = ms.get_historical_summary(window_hours=1.0)
+    profile = getattr(args, "profile", "minimal")
 
     if getattr(args, "json", False):
         data = {
+            "profile": profile,
             "alert_count": len(alerts),
             "alerts": alerts,
             "recent_summary": summary,
@@ -26,7 +28,7 @@ def execute_alerts_cmd(args: argparse.Namespace) -> int:
         print(json.dumps(data, indent=2))
     else:
         print("=" * 60)
-        print(" USPC Operational Threshold Alerts")
+        print(f" USPC Operational Threshold Alerts [{profile.upper()}]")
         print("=" * 60)
         if alerts:
             for idx, a in enumerate(alerts, 1):

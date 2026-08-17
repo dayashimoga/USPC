@@ -3,10 +3,10 @@
 ## Core Architecture & Platform
 - [x] Version definition & AGPL-3.0 License `[UNIT-PROVEN]`
 - [x] Security Policy & Contributing Guidelines `[UNIT-PROVEN]`
-- [x] Unified Project Implementation Plan & Architectural Decision Records (ADR 001 - ADR 015) `[UNIT-PROVEN]`
+- [x] Unified Project Implementation Plan & Architectural Decision Records (ADR 001 - ADR 018) `[UNIT-PROVEN]`
 - [x] Python Package specification (`pyproject.toml`) and Makefile `[UNIT-PROVEN]`
 - [x] Centralized Configuration schema (`config/schema.yaml`) and defaults (`config/defaults.yaml`, `config/cloud.example.yaml`) `[UNIT-PROVEN]`
-- [x] Declarative configuration management (`cloudctl config validate|diff|export|import|migrate`) `[UNIT-PROVEN]`
+- [x] Declarative configuration management (`cloudctl config validate|diff|export|import|migrate`) with deterministic 5-stage precedence `[UNIT-PROVEN]`
 - [x] Setting metadata extraction and schema descriptions (`get_setting_metadata`) `[UNIT-PROVEN]`
 - [x] Core `cloudctl` CLI framework and command dispatcher (25 subcommands registered and tested) `[UNIT-PROVEN]`
 - [x] One-command setup bootstrap (`cloudctl setup`) with `--dry-run`, `--force` `[UNIT-PROVEN]`
@@ -15,7 +15,7 @@
 - [x] Safe shell command executor with timeout and automated secret masking `[UNIT-PROVEN]`
 - [x] Container abstraction layer (Podman pod & volume management, rootless execution) `[CONTAINER-PROVEN]`
 - [x] Switchable Orchestrator abstraction (`PodmanBackend` Appliance Mode vs `K3sBackend` Cluster Mode) `[UNIT-PROVEN]`
-- [x] Declarative K3s Kubernetes manifests (`deploy/k3s/`) with namespace, storage, database, cache, media, and ingress `[UNIT-PROVEN]`
+- [x] Declarative K3s Kubernetes manifests (`deploy/k3s/`) with namespace, storage, database, cache, media, headscale, ingress, prometheus, grafana, and loki `[UNIT-PROVEN]`
 - [x] Storage detection, partition validation, usage stats, and safe migration utilities `[UNIT-PROVEN]`
 
 ## Media Processing & Streaming Engine (`src/media`)
@@ -24,7 +24,7 @@
 - [x] In-memory token revocation registry (`revoke_token`, `is_token_revoked`) `[UNIT-PROVEN]`
 - [x] Complete removal of raw secret query parameter bypass `[UNIT-PROVEN]`
 - [x] Structured security audit logger for authentication and access control events `[UNIT-PROVEN]`
-- [x] Standard security headers middleware (`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`, `X-Process-Time-Ms`) `[INTEGRATION-PROVEN]`
+- [x] Modern security headers middleware (Strict CSP, Permissions-Policy, HSTS, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `X-Process-Time-Ms`) `[INTEGRATION-PROVEN]`
 - [x] Asynchronous filesystem scanner with symlink traversal prevention `[INTEGRATION-PROVEN]`
 - [x] FFprobe / Pillow image and video metadata extraction pipeline `[INTEGRATION-PROVEN]`
 - [x] Thumbnail generator (video frame grab, image resize, audio ID3 art extraction, fallback badges) `[INTEGRATION-PROVEN]`
@@ -37,13 +37,14 @@
 
 ## Observability, Monitoring & Vendor-Neutrality
 - [x] 100% Free & Open-Source architecture with 0% SaaS lock-in `[UNIT-PROVEN]`
+- [x] Multi-tier monitoring profiles (`MINIMAL`, `STANDARD`, `FULL`, `CLUSTER`) `[UNIT-PROVEN]`
 - [x] Standardized Prometheus / OpenTelemetry text format exporter on `/metrics` endpoint `[INTEGRATION-PROVEN]`
 - [x] Live interactive terminal observability dashboard (`cloudctl monitor`) `[UNIT-PROVEN]`
 - [x] Proactive threshold alert monitoring (`cloudctl alerts`) with critical exit code gates `[UNIT-PROVEN]`
-- [x] Software Bill of Materials (SBOM) SPDX 2.3 JSON generator & license audit (`cloudctl sbom`) `[UNIT-PROVEN]`
+- [x] Software Bill of Materials (SBOM) SPDX 2.3 & CycloneDX 1.5 JSON generator & license audit (`cloudctl sbom`) `[UNIT-PROVEN]`
 - [x] Self-contained historical SQLite metrics store (1h/24h/7d/30d) with 100MB bounded storage ceiling and auto-compaction `[UNIT-PROVEN]`
 - [x] Dynamic capacity profiles (`TINY`, `SMALL`, `STANDARD`, `PERFORMANCE`, `MEDIA`) with IOPS and stress testing `[UNIT-PROVEN]`
-- [x] Configurable performance budgets with P95 latency tracking `[UNIT-PROVEN]`
+- [x] Hardware performance auto-tuning (`auto_tune_from_hardware`) and budget validation gates `[UNIT-PROVEN]`
 - [x] WireGuard + Headscale private networking orchestrator & peer registration `[UNIT-PROVEN]`
 - [x] Comprehensive security audit engine (`cloudctl security-check`) `[UNIT-PROVEN]`
 - [x] Restic AES-256 backup, integrity verification (`--verify`), and automated retention pruning `[UNIT-PROVEN]`
@@ -53,8 +54,9 @@
 - [x] Cross-network physical multi-host WireGuard routing `[HARDWARE-REQUIRED]`
 
 ## Testing & Quality Assurance
-- [x] Pytest test suites (95.74% code coverage, 100% pass across 202 tests, 4 skipped e2e container tests) `[UNIT-PROVEN]`
+- [x] Pytest test suites (95.60% code coverage, 100% pass across 207 tests, 4 skipped e2e container tests) `[UNIT-PROVEN]`
 - [x] Automated acceptance lab release gate (`cloudctl acceptance --full`) generating JSON & interactive HTML reports `[UNIT-PROVEN]`
+
 - [x] Exhaustive security attack test suite (`tests/unit/test_security_attacks.py`) `[UNIT-PROVEN]`
 - [x] Infrastructure & resource failure injection test suite (`tests/unit/test_resilience.py`) `[UNIT-PROVEN]`
 - [x] Destructive DR & SHA-256 data integrity test suite (`tests/unit/test_destructive_dr.py`) `[UNIT-PROVEN]`

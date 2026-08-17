@@ -27,6 +27,11 @@ class MetricSnapshot:
     active_streams: int
     queue_depth: int
     error_count: int = 0
+    io_read_mb: float = 0.0
+    io_write_mb: float = 0.0
+    net_sent_mb: float = 0.0
+    net_recv_mb: float = 0.0
+    latency_p95_ms: float = 0.0
 
 
 class MetricsStore:
@@ -243,6 +248,26 @@ def format_prometheus_metrics(
         "# HELP uspc_errors_total Cumulative or windowed error count.",
         "# TYPE uspc_errors_total counter",
         f"uspc_errors_total {snapshot.error_count}",
+        "",
+        "# HELP uspc_io_read_megabytes Disk IO read volume in MB.",
+        "# TYPE uspc_io_read_megabytes gauge",
+        f"uspc_io_read_megabytes {snapshot.io_read_mb:.2f}",
+        "",
+        "# HELP uspc_io_write_megabytes Disk IO write volume in MB.",
+        "# TYPE uspc_io_write_megabytes gauge",
+        f"uspc_io_write_megabytes {snapshot.io_write_mb:.2f}",
+        "",
+        "# HELP uspc_net_sent_megabytes Network egress volume in MB.",
+        "# TYPE uspc_net_sent_megabytes gauge",
+        f"uspc_net_sent_megabytes {snapshot.net_sent_mb:.2f}",
+        "",
+        "# HELP uspc_net_recv_megabytes Network ingress volume in MB.",
+        "# TYPE uspc_net_recv_megabytes gauge",
+        f"uspc_net_recv_megabytes {snapshot.net_recv_mb:.2f}",
+        "",
+        "# HELP uspc_latency_p95_ms P95 API and media response latency in milliseconds.",
+        "# TYPE uspc_latency_p95_ms gauge",
+        f"uspc_latency_p95_ms {snapshot.latency_p95_ms:.2f}",
     ]
     if extra_gauges:
         for k, v in extra_gauges.items():
@@ -256,3 +281,14 @@ def format_prometheus_metrics(
                 ]
             )
     return "\n".join(lines) + "\n"
+
+
+def get_retention_policy_days(profile: str = "minimal") -> int:
+    """Return recommended metrics retention days according to monitoring profile."""
+    policies = {
+        "minimal": 7,
+        "standard": 30,
+        "full": 90,
+        "cluster": 180,
+    }
+    return policies.get(profile.lower(), 30)

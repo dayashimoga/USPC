@@ -26,7 +26,8 @@ def test_generate_acceptance_report(tmp_path):
         assert rep.overall_status == "ACCEPTED"
         assert rep.readiness_score == 98.5
         assert len(rep.layers) == 6
-        assert rep.verifications["one_command_setup"] == "PASS"
+        assert rep.verifications["one_command_setup_and_idempotency"] == "PASS"
+        assert "setup_dry_run" in rep.reproduction_commands
 
 
 def test_execute_acceptance_cli_json_and_text(capsys):
