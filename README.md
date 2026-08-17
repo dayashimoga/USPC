@@ -125,18 +125,41 @@ ruff check src/ tests/
 
 ## Documentation
 
-- [Technical Architecture Overview](docs/architecture/overview.md)
-- [Security Architecture & Threat Model](docs/security/threat-model.md)
-- [Production Readiness & Verification Matrix](docs/operations/readiness-matrix.md)
-- [Linux Setup Guide](docs/setup/linux.md)
-- [Windows Setup Guide](docs/setup/windows.md)
-- [macOS Setup Guide](docs/setup/macos.md)
-- [Performance & Scalability Guide](docs/operations/performance.md)
-- [Configuration Reference](docs/operations/configuration.md)
-- [Backup & Disaster Recovery Guide](docs/operations/backup-restore.md)
-- [User Guide (Files & Media)](docs/user-guide/getting-started.md)
-- [Supported Formats Matrix](docs/media/supported-formats.md)
-- [Troubleshooting Runbook](docs/operations/troubleshooting.md)
+### Core
+- [Requirements](docs/REQUIREMENTS.md) — Functional, non-functional, platform, and acceptance criteria
+- [Architecture](docs/ARCHITECTURE.md) — System design, data flow, components, ports, and manifests
+- [Implementation](IMPLEMENTATION.md) — Detailed implementation notes
+- [Project Status](PROJECT_STATUS.md) — Test metrics, capability matrix, known limitations
+- [Changelog](CHANGELOG.md) — Version history
+
+### Operations
+- [CLI Reference](docs/CLI-REFERENCE.md) — Complete command reference (26 commands, all flags)
+- [Configuration Reference](docs/CONFIGURATION.md) — All settings, schema, precedence, env vars
+- [Monitoring & Observability](docs/MONITORING.md) — Profiles, metrics, alerts, Prometheus/Grafana/Loki
+- [Performance & Tuning](docs/PERFORMANCE.md) — Profiles, budgets, benchmarks, load tests
+- [Backup & Disaster Recovery](docs/BACKUP-DR.md) — Restic, RPO/RTO, retention, DR lifecycle
+- [Upgrade & Migration](docs/UPGRADE-MIGRATION.md) — Updates, config migration, host migration
+- [Troubleshooting](docs/TROUBLESHOOTING.md) — Symptom → Diagnosis → Fix tables
+
+### Architecture
+- [Orchestration](docs/ORCHESTRATION.md) — Podman Appliance vs K3s Cluster mode
+- [Networking](docs/NETWORKING.md) — Headscale/WireGuard VPN, port matrix, firewall
+- [Security](SECURITY.md) — Threat model, auth, headers, secrets, audit checks
+
+### Compliance
+- [SBOM & License](docs/SBOM-LICENSE.md) — SPDX/CycloneDX, dependency inventory, license policy
+- [Dependencies](docs/DEPENDENCIES.md) — All runtime, dev, and external dependencies
+- [Acceptance Framework](docs/ACCEPTANCE.md) — 14-gate production release gate
+- [Testing](docs/TESTING.md) — 222 tests, coverage, evidence taxonomy
+- [CI/CD Pipeline](docs/CI-CD.md) — GitHub Actions workflows
+
+### Setup Guides
+- [Linux](docs/setup/linux.md) | [Windows](docs/setup/windows.md) | [macOS](docs/setup/macos.md)
+
+### User
+- [User Guide](docs/USER_GUIDE.md) — Getting started, browsing, streaming, uploads
+- [Supported Formats](docs/media/supported-formats.md) — Video, audio, image format matrix
+- [Documentation Status](DOCUMENTATION_STATUS.md) — Audit matrix of all documentation
 
 ---
 
