@@ -72,7 +72,8 @@ def test_detect_remaining_branches(temp_dir: Path):
         assert detect_virtualization("linux") == "wsl2"
 
     # detect_privileges windows exception
-    with patch("ctypes.windll.shell32.IsUserAnAdmin", side_effect=Exception("error"), create=True):
+    with patch("cloudctl.core.detect.ctypes", create=True) as mock_ctypes:
+        mock_ctypes.windll.shell32.IsUserAnAdmin.side_effect = Exception("error")
         assert detect_privileges("windows") is False
 
     # detect_disks exception branch

@@ -77,7 +77,10 @@ def detect_privileges(os_name: str) -> bool:
         try:
             import ctypes
 
-            return ctypes.windll.shell32.IsUserAnAdmin() != 0
+            windll = getattr(ctypes, "windll", None)
+            if windll is not None:
+                return windll.shell32.IsUserAnAdmin() != 0
+            return False
         except Exception:
             return False
     else:
