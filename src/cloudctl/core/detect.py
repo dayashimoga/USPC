@@ -1,7 +1,4 @@
-"""Comprehensive host environment and hardware resource detection."""
-
-from __future__ import annotations
-
+import ctypes
 import os
 import platform
 import shutil
@@ -75,8 +72,6 @@ def detect_privileges(os_name: str) -> bool:
     """Check if current process has root/administrator privileges."""
     if os_name == "windows":
         try:
-            import ctypes
-
             windll = getattr(ctypes, "windll", None)
             if windll is not None:
                 return windll.shell32.IsUserAnAdmin() != 0
