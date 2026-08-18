@@ -7,6 +7,23 @@
 
 ## 1. Quick Start (One-Command Bootstrap)
 
+### Automated Platform Scripts
+
+#### Windows (Podman + Dedicated Drive Partition Automation)
+```powershell
+# Automatically installs prerequisites (Podman, Python), configures partition, and bootstraps USPC:
+powershell.exe -ExecutionPolicy Bypass -File .\scripts\setup-windows-podman.ps1 -StorageDrive "H:\USPC_STORAGE"
+```
+
+#### Linux (Podman + Dedicated Partition Automation)
+```bash
+# Automatically installs Podman, configures mount point, and bootstraps USPC:
+./scripts/setup-linux-podman.sh /mnt/uspc_data
+```
+
+---
+
+### Manual / Custom Bootstrap
 ```bash
 # 1. Clone repository
 git clone https://github.com/dayashimoga/USPC.git
