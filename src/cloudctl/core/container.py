@@ -146,6 +146,22 @@ class ContainerManager:
             return False
         return True
 
+    def image_exists(self, image_name: str) -> bool:
+        """Check if container image exists locally."""
+        res = run_command([self.engine, "image", "exists", image_name], timeout=5.0)
+        return res.success
+
+    def build_image(self, tag: str, dockerfile_path: str, context_path: str = ".") -> bool:
+        """Build container image locally."""
+        logger.info(f"Building local container image '{tag}' from {dockerfile_path}...")
+        cmd = [self.engine, "build", "-t", tag, "-f", str(dockerfile_path), str(context_path)]
+        res = run_command(cmd, timeout=300.0)
+        if not res.success:
+            logger.error(f"Failed to build image '{tag}': {res.stderr}")
+            return False
+        logger.info(f"Container image '{tag}' built successfully.")
+        return True
+
     def stop_container(self, name: str, timeout: int = 15) -> bool:
         """Stop running container."""
         res = run_command([self.engine, "stop", "-t", str(timeout), name], timeout=timeout + 10.0)

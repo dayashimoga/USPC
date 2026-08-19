@@ -122,9 +122,18 @@ def execute_install(args: argparse.Namespace) -> int:
 
     # Step 10: Launch Media Library microservice
     if config["media"]["enabled"]:
+        media_image = "uspc-media:latest"
+        if not cm.image_exists(media_image):
+            from pathlib import Path
+
+            df_path = Path(__file__).resolve().parents[2] / "media" / "Dockerfile"
+            ctx_path = Path(__file__).resolve().parents[3]
+            if df_path.exists():
+                cm.build_image(media_image, str(df_path), str(ctx_path))
+
         cm.run_container(
             name="uspc-media",
-            image="uspc-media:latest",
+            image=media_image,
             env={
                 "USPC_DATA_PATH": "/data/nextcloud",
                 "USPC_CACHE_PATH": "/data/media_cache",
