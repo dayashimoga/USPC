@@ -4,4 +4,9 @@ $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Env:PYTHONPATH = "$ScriptDir\src;$Env:PYTHONPATH"
 
-& python -m cloudctl $args
+$PythonExe = "python"
+if (Test-Path "$ScriptDir\.venv\Scripts\python.exe") {
+    $PythonExe = "$ScriptDir\.venv\Scripts\python.exe"
+}
+
+& $PythonExe -m cloudctl $args

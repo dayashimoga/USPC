@@ -163,16 +163,22 @@ while ($retries -gt 0) {
 Write-Success "Podman container engine is active and responding."
 
 # -------------------------------------------------------------------------
-# Step 4: Python Virtual Environment & Dependencies
+# Step 4: Python Virtual Environment & Dependencies (.venv isolation)
 # -------------------------------------------------------------------------
-Write-Step "Step 4: Installing USPC Python Dependencies"
+Write-Step "Step 4: Installing USPC Python Dependencies (Local .venv Isolation)"
 
 Set-Location $ScriptDir
+if (!(Test-Path "$ScriptDir\.venv")) {
+    Write-Host "Creating isolated Python virtual environment at $ScriptDir\.venv..." -ForegroundColor Yellow
+    python -m venv "$ScriptDir\.venv"
+}
+
+$VenvPython = "$ScriptDir\.venv\Scripts\python.exe"
 $Env:PYTHONPATH = "$ScriptDir\src;$Env:PYTHONPATH"
 
-python -m pip install --upgrade pip --quiet
-python -m pip install -e ".[dev]" --quiet
-Write-Success "Python dependencies installed."
+& $VenvPython -m pip install --upgrade pip --quiet
+& $VenvPython -m pip install -e ".[dev]" --quiet
+Write-Success "Python dependencies isolated inside local .venv (Zero global Python packages modified)."
 
 # -------------------------------------------------------------------------
 # Step 5: Generate Tailored cloud.yaml on Dedicated Partition
