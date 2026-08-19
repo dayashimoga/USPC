@@ -101,49 +101,66 @@ if (!$SkipPrerequisites) {
     if (!(Get-Command python -ErrorAction SilentlyContinue)) {
         Write-Warn "Python not found. Installing Python 3.11 via winget..."
         winget install --id Python.Python.3.11 -e --source winget --accept-source-agreements --accept-package-agreements
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     } else {
         $pyVer = python --version 2>&1
         Write-Success "Python detected: $pyVer"
     }
 
+    # Check for Podman
     $hasPodman = [bool](Get-Command podman -ErrorAction SilentlyContinue)
-    $hasDocker = [bool](Get-Command docker -ErrorAction SilentlyContinue)
+    if (!$hasPodman) {
+        if (Test-Path "C:\Program Files\RedHat\Podman\podman.exe") {
+            $env:Path += ";C:\Program Files\RedHat\Podman"
+            $hasPodman = $true
+        }
+    }
 
-    if (!$hasPodman -and !$hasDocker) {
-        Write-Warn "No container runtime detected. Installing Podman via winget..."
+    if (!$hasPodman) {
+        Write-Warn "Podman CLI not found. Installing Podman via winget..."
         winget install --id RedHat.Podman -e --source winget --accept-source-agreements --accept-package-agreements
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+        if (Test-Path "C:\Program Files\RedHat\Podman\podman.exe") {
+            $env:Path += ";C:\Program Files\RedHat\Podman"
+        }
         $hasPodman = [bool](Get-Command podman -ErrorAction SilentlyContinue)
     }
 
     if ($hasPodman) {
         Write-Success "Podman CLI detected."
-    } elseif ($hasDocker) {
-        Write-Success "Docker engine detected."
     } else {
-        Write-Warn "Container CLI installed. Restart terminal if not found."
+        Write-Err "Podman CLI could not be located. Please install Podman Desktop / CLI from https://podman.io"
+        exit 1
     }
 }
 
 # -------------------------------------------------------------------------
 # Step 3: Podman Machine Lifecycle & Initialization
 # -------------------------------------------------------------------------
-if (Get-Command podman -ErrorAction SilentlyContinue) {
-    Write-Step "Step 3: Initializing and Starting Podman Machine"
-    
-    $machineList = podman machine list 2>&1
-    $isRunning = $machineList -match "Currently running"
+Write-Step "Step 3: Initializing and Starting Podman Machine"
 
-    if (!$isRunning) {
-        $hasMachine = $machineList -match "podman-machine-default"
-        if (!$hasMachine) {
-            Write-Host "Initializing default Podman machine..." -ForegroundColor Yellow
-            podman machine init --cpus 4 --memory 4096 --disk-size 50
-        }
-        Write-Host "Starting Podman machine..." -ForegroundColor Yellow
-        podman machine start
+$machineList = podman machine list 2>&1
+$isRunning = $machineList -match "Currently running"
+
+if (!$isRunning) {
+    $hasMachine = $machineList -match "podman-machine-default"
+    if (!$hasMachine) {
+        Write-Host "Initializing default Podman machine (4 CPUs, 4GB RAM)..." -ForegroundColor Yellow
+        podman machine init --cpus 4 --memory 4096 --disk-size 50
     }
-    Write-Success "Podman container engine is active."
+    Write-Host "Starting Podman machine..." -ForegroundColor Yellow
+    podman machine start
 }
+
+# Verify Podman responsiveness
+$retries = 10
+while ($retries -gt 0) {
+    $info = podman info 2>&1
+    if ($LASTEXITCODE -eq 0) { break }
+    Start-Sleep -Seconds 2
+    $retries--
+}
+Write-Success "Podman container engine is active and responding."
 
 # -------------------------------------------------------------------------
 # Step 4: Python Virtual Environment & Dependencies
@@ -170,12 +187,16 @@ if (!$DryRun) {
 }
 
 $yamlLines = @(
-    "# USPC Declarative Production Configuration",
+    "# USPC Declarative Production Configuration (Podman)",
     "cloud:",
     "  name: `"$CloudName`"",
     "  environment: `"production`"",
     "  domain: `"$Domain`"",
     "  admin_user: `"admin`"",
+    "",
+    "runtime:",
+    "  engine: `"podman`"",
+    "  rootless: true",
     "",
     "storage:",
     "  data_path: `"$DataPath`"",
@@ -222,7 +243,7 @@ $yamlLines = @(
 $ConfigTarget = "$ScriptDir\config\cloud.yaml"
 if (!$DryRun) {
     [System.IO.File]::WriteAllLines($ConfigTarget, $yamlLines, [System.Text.Encoding]::UTF8)
-    Write-Success "Configuration saved to $ConfigTarget"
+    Write-Success "Configuration saved to $ConfigTarget (Engine: Podman)"
 } else {
     Write-Host "[DRY-RUN] Would write config to $ConfigTarget" -ForegroundColor Yellow
 }
@@ -232,7 +253,7 @@ if (!$DryRun) {
 # -------------------------------------------------------------------------
 Write-Step "Step 6: Executing USPC Setup Bootstrap"
 
-$SetupArgs = @("setup", "--non-interactive")
+$SetupArgs = @("setup", "--force", "--non-interactive")
 if ($DryRun) {
     $SetupArgs += "--dry-run"
 }
@@ -252,6 +273,7 @@ if (!$DryRun) {
 Write-Host "`n=================================================================" -ForegroundColor Green
 Write-Host "   USPC Setup Completed Successfully!                           " -ForegroundColor Green
 Write-Host "=================================================================" -ForegroundColor Green
+Write-Host "  * Container Engine: Podman (Rootless Appliance Mode)" -ForegroundColor White
 Write-Host "  * Nextcloud Web   : http://localhost:8081" -ForegroundColor White
 Write-Host "  * Media Library   : http://localhost:8085" -ForegroundColor White
 Write-Host "  * Dedicated Drive : $StorageDrive" -ForegroundColor White
