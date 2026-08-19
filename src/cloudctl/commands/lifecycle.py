@@ -24,6 +24,12 @@ def execute_start(args: argparse.Namespace) -> int:
     for svc in SERVICES:
         if svc == "uspc-media" and not config.get("media", {}).get("enabled", True):
             continue
+        if not cm.inspect_container(svc):
+            logger.info(f"Container '{svc}' was not found. Deploying missing container...")
+            from cloudctl.commands.install import execute_install
+
+            return execute_install(args)
+
         if cm.start_container(svc):
             logger.info(f"Started container: {svc}")
         else:
