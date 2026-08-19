@@ -76,14 +76,23 @@ class ContainerManager:
             return res.stdout.strip()
         return "unknown"
 
-    def create_pod(self, port_mappings: list[tuple[int, int]] | None = None) -> bool:
+    def create_pod(
+        self,
+        port_mappings: list[tuple[int, int]] | None = None,
+        force: bool = False,
+    ) -> bool:
         """Create a shared network Pod (Podman) or bridge network (Docker)."""
         if self.engine == "podman":
             # Check if pod exists
             check = run_command(["podman", "pod", "exists", self.pod_name], timeout=5.0)
             if check.success:
-                logger.debug(f"Podman pod '{self.pod_name}' already exists.")
-                return True
+                if not force:
+                    logger.debug(f"Podman pod '{self.pod_name}' already exists.")
+                    return True
+                logger.info(
+                    f"Recreating podman pod '{self.pod_name}' with updated port mappings..."
+                )
+                run_command(["podman", "pod", "rm", "-f", self.pod_name], timeout=30.0)
 
             cmd = ["podman", "pod", "create", "--name", self.pod_name]
             if port_mappings:

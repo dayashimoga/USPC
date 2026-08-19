@@ -70,7 +70,8 @@ def execute_install(args: argparse.Namespace) -> int:
             (config["services"]["nextcloud"]["port"], 80),
             (config["media"]["port"], 8085),
             (config["network"]["headscale_port"], config["network"]["headscale_port"]),
-        ]
+        ],
+        force=True,
     )
     logger.info(f"Step 6/11: Container runtime pod initialized using {cm.engine}.")
 
