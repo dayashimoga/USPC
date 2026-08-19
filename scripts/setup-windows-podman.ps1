@@ -148,6 +148,7 @@ if (!$isRunning) {
         Write-Host "Initializing default Podman machine (4 CPUs, 4GB RAM)..." -ForegroundColor Yellow
         podman machine init --cpus 4 --memory 4096 --disk-size 50
     }
+    podman machine set --rootful 2>&1 | Out-Null
     Write-Host "Starting Podman machine..." -ForegroundColor Yellow
     podman machine start
 }

@@ -143,10 +143,10 @@ class ContainerManager:
             for host_dir, cont_dir in volumes:
                 cmd.extend(["-v", f"{host_dir}:{cont_dir}:Z"])
 
+        cmd.append(image)
+
         if extra_args:
             cmd.extend(extra_args)
-
-        cmd.append(image)
 
         logger.info(f"Launching container '{name}' with image '{image}'")
         res = run_command(cmd, timeout=60.0)

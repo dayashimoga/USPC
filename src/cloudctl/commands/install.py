@@ -78,6 +78,11 @@ def execute_install(args: argparse.Namespace) -> int:
     # Step 7: Launch PostgreSQL database
     paths = storage_mgr.get_paths()
     pg_cfg = config["services"]["postgres"]
+    pg_vol = (
+        ("uspc-postgres-data", "/var/lib/postgresql/data")
+        if host.os_name == "windows"
+        else (str(paths.postgres_data), "/var/lib/postgresql/data")
+    )
     cm.run_container(
         name="uspc-postgres",
         image=f"docker.io/library/postgres:{pg_cfg['version']}",
@@ -87,7 +92,7 @@ def execute_install(args: argparse.Namespace) -> int:
             "POSTGRES_PASSWORD": secrets.postgres_password,
             "PGDATA": "/var/lib/postgresql/data/pgdata",
         },
-        volumes=[(str(paths.postgres_data), "/var/lib/postgresql/data")],
+        volumes=[pg_vol],
     )
     logger.info("Step 7/11: PostgreSQL database container deployed.")
 
@@ -102,6 +107,16 @@ def execute_install(args: argparse.Namespace) -> int:
 
     # Step 9: Launch Nextcloud Community
     nc_cfg = config["services"]["nextcloud"]
+    nc_cfg_vol = (
+        ("uspc-nextcloud-config", "/var/www/html/config")
+        if host.os_name == "windows"
+        else (str(paths.nextcloud_config), "/var/www/html/config")
+    )
+    nc_data_vol = (
+        ("uspc-nextcloud-data", "/var/www/html/data")
+        if host.os_name == "windows"
+        else (str(paths.nextcloud_data), "/var/www/html/data")
+    )
     cm.run_container(
         name="uspc-nextcloud",
         image=f"docker.io/library/nextcloud:{nc_cfg['version']}",
@@ -114,10 +129,11 @@ def execute_install(args: argparse.Namespace) -> int:
             "NEXTCLOUD_ADMIN_USER": config["cloud"]["admin_user"],
             "NEXTCLOUD_ADMIN_PASSWORD": secrets.nextcloud_admin_password,
             "NEXTCLOUD_TRUSTED_DOMAINS": f"{config['cloud']['domain']} localhost 127.0.0.1",
+            "NEXTCLOUD_DATA_DIR_CHECK": "false",
         },
         volumes=[
-            (str(paths.nextcloud_data), "/var/www/html/data"),
-            (str(paths.nextcloud_config), "/var/www/html/config"),
+            nc_data_vol,
+            nc_cfg_vol,
         ],
     )
     logger.info("Step 9/11: Nextcloud personal cloud container deployed.")
@@ -151,13 +167,18 @@ def execute_install(args: argparse.Namespace) -> int:
         logger.info("Step 10/11: USPC Media streaming microservice deployed.")
 
     # Step 11: Launch Headscale VPN coordination
+    hs_data_vol = (
+        ("uspc-headscale-data", "/var/lib/headscale")
+        if host.os_name == "windows"
+        else (str(paths.headscale_data), "/var/lib/headscale")
+    )
     cm.run_container(
         name="uspc-headscale",
         image="docker.io/headscale/headscale:0.22.3",
-        extra_args=["serve"],
+        extra_args=["headscale", "serve"],
         volumes=[
             (str(paths.headscale_config), "/etc/headscale"),
-            (str(paths.headscale_data), "/var/lib/headscale"),
+            hs_data_vol,
         ],
     )
     logger.info("Step 11/11: Headscale VPN mesh controller deployed.")
