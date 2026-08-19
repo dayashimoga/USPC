@@ -85,6 +85,7 @@ def execute_install(args: argparse.Namespace) -> int:
             "POSTGRES_DB": pg_cfg["db_name"],
             "POSTGRES_USER": pg_cfg["user"],
             "POSTGRES_PASSWORD": secrets.postgres_password,
+            "PGDATA": "/var/lib/postgresql/data/pgdata",
         },
         volumes=[(str(paths.postgres_data), "/var/lib/postgresql/data")],
     )
@@ -140,6 +141,7 @@ def execute_install(args: argparse.Namespace) -> int:
                 "USPC_CACHE_PATH": "/data/media_cache",
                 "USPC_JWT_SECRET": secrets.media_jwt_secret,
                 "USPC_PORT": "8085",
+                "USPC_HOST": "0.0.0.0",
             },
             volumes=[
                 (str(paths.nextcloud_data), "/data/nextcloud"),
@@ -152,6 +154,7 @@ def execute_install(args: argparse.Namespace) -> int:
     cm.run_container(
         name="uspc-headscale",
         image="docker.io/headscale/headscale:0.22.3",
+        extra_args=["serve"],
         volumes=[
             (str(paths.headscale_config), "/etc/headscale"),
             (str(paths.headscale_data), "/var/lib/headscale"),

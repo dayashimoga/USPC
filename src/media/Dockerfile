@@ -34,6 +34,4 @@ ENV PYTHONPATH="/app/src"
 
 EXPOSE 8085
 
-USER 1000:1000
-
 CMD ["python", "-m", "media.app"]
