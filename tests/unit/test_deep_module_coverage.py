@@ -195,6 +195,10 @@ def test_cli_lifecycle_and_test_commands():
     # execute_start, execute_stop, execute_restart
     args = MagicMock(config=None)
     with (
+        patch(
+            "cloudctl.core.container.ContainerManager.inspect_container",
+            return_value={"id": "mock"},
+        ),
         patch("cloudctl.core.container.ContainerManager.start_container", return_value=True),
         patch("cloudctl.core.container.ContainerManager.stop_container", return_value=True),
         patch("cloudctl.core.container.ContainerManager.restart_container", return_value=True),

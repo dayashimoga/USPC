@@ -74,13 +74,17 @@ def test_command_lifecycle(mock_config_dict: dict, temp_dir: Path):
     cm.save_config(mock_config_dict)
 
     args = argparse.Namespace(config=str(cfg_file))
-    with patch("cloudctl.core.container.ContainerManager.start_container", return_value=True):
+    with (
+        patch(
+            "cloudctl.core.container.ContainerManager.inspect_container",
+            return_value={"id": "mock_id"},
+        ),
+        patch("cloudctl.core.container.ContainerManager.start_container", return_value=True),
+        patch("cloudctl.core.container.ContainerManager.stop_container", return_value=True),
+        patch("cloudctl.core.container.ContainerManager.restart_container", return_value=True),
+    ):
         assert execute_start(args) == 0
-
-    with patch("cloudctl.core.container.ContainerManager.stop_container", return_value=True):
         assert execute_stop(args) == 0
-
-    with patch("cloudctl.core.container.ContainerManager.restart_container", return_value=True):
         assert execute_restart(args) == 0
 
 

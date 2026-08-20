@@ -26,8 +26,15 @@ except ImportError:
 @pytest.fixture
 def temp_dir() -> Generator[Path, None, None]:
     """Provide an isolated temporary directory for test operations."""
-    with tempfile.TemporaryDirectory(prefix="uspc_test_") as td:
-        yield Path(td)
+    td = tempfile.mkdtemp(prefix="uspc_test_")
+    p = Path(td)
+    yield p
+    import shutil
+
+    try:
+        shutil.rmtree(td, ignore_errors=True)
+    except Exception:
+        pass
 
 
 @pytest.fixture
