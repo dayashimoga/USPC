@@ -52,10 +52,20 @@ class ContainerManager:
         )
         return "docker"
 
-    def is_available(self) -> bool:
-        """Check if container engine daemon/CLI is responsive."""
+    def is_available(self, auto_start_vm: bool = True) -> bool:
+        """Check if container engine daemon/CLI is responsive, auto-starting Podman VM if needed."""
         res = run_command([self.engine, "info"], timeout=10.0)
-        return res.success
+        if res.success:
+            return True
+        if auto_start_vm and self.engine == "podman" and shutil.which("podman"):
+            m_list = run_command(["podman", "machine", "list"], timeout=10.0)
+            if m_list.success and "podman-machine-default" in m_list.stdout:
+                logger.info("Podman machine is stopped. Auto-starting Podman VM...")
+                start_res = run_command(["podman", "machine", "start"], timeout=60.0)
+                if start_res.success:
+                    retry = run_command(["podman", "info"], timeout=15.0)
+                    return retry.success
+        return False
 
     def is_rootless(self) -> bool:
         """Check if container engine is running in rootless mode."""

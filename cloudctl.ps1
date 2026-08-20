@@ -10,6 +10,15 @@ if (Test-Path "C:\Program Files\RedHat\Podman\podman.exe") {
     }
 }
 
+# Auto-start Podman machine if stopped
+if (Get-Command podman -ErrorAction SilentlyContinue) {
+    $mList = podman machine list 2>$null
+    if ($mList -match "podman-machine-default" -and $mList -notmatch "Currently running") {
+        Write-Host "==> Podman VM is stopped. Starting Podman machine..." -ForegroundColor Cyan
+        podman machine start
+    }
+}
+
 $PythonExe = "python"
 if (Test-Path "$ScriptDir\.venv\Scripts\python.exe") {
     $PythonExe = "$ScriptDir\.venv\Scripts\python.exe"
