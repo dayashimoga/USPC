@@ -46,11 +46,13 @@ class StorageScanner:
             return results
 
         for root, dirs, files in os.walk(data_dir, followlinks=False):
-            # Skip hidden folders and cache directories
+            # Skip hidden folders and internal Nextcloud cache directories
             dirs[:] = [
                 d
                 for d in dirs
-                if not d.startswith(".") and d not in ("media_cache", "thumbnails", "appdata_")
+                if not d.startswith(".")
+                and not d.startswith("appdata_")
+                and d not in ("media_cache", "thumbnails", "cache", "uploads")
             ]
 
             for file in files:

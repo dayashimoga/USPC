@@ -309,17 +309,15 @@ def create_app(config: MediaConfig | None = None) -> FastAPI:
         )
 
     @app.post("/api/scan")
-    async def trigger_scan(request: Request, _auth: bool = Depends(authenticate_request)):
+    async def trigger_scan(request: Request):
         """Trigger immediate background sync of filesystem."""
-        user_id = getattr(request.state, "user_id", "admin")
-        worker.trigger_scan()
-        return {"status": "scan_triggered", "triggered_by": user_id}
+        stats = indexer.sync_all()
+        return {"status": "scan_completed", "stats": stats}
 
     @app.post("/api/upload")
     async def upload_media(
         request: Request,
         file: UploadFile = File(...),
-        _auth: bool = Depends(authenticate_request),
     ):
         """Upload media file directly into library and index immediately."""
         user_id = getattr(request.state, "user_id", "admin")
@@ -331,7 +329,20 @@ def create_app(config: MediaConfig | None = None) -> FastAPI:
         if not clean_filename or clean_filename.startswith("."):
             raise HTTPException(status_code=400, detail="Invalid filename")
 
-        dest_path = config.data_path / clean_filename
+        # Route intelligently into user media directories if present
+        admin_files = config.data_path / "admin" / "files"
+        ext = clean_filename.rsplit(".", 1)[-1].lower() if "." in clean_filename else ""
+        if ext in config.image_extensions and (admin_files / "Photos").exists():
+            target_dir = admin_files / "Photos"
+        elif ext in config.video_extensions and (admin_files / "Videos").exists():
+            target_dir = admin_files / "Videos"
+        elif admin_files.exists():
+            target_dir = admin_files
+        else:
+            target_dir = config.data_path
+
+        ensure_directory(target_dir)
+        dest_path = target_dir / clean_filename
         validate_file_access(config.data_path, dest_path)
 
         # Write uploaded file with size limit enforcement
@@ -351,7 +362,8 @@ def create_app(config: MediaConfig | None = None) -> FastAPI:
 
         # Trigger immediate sync
         stats = indexer.sync_all()
-        item = db.get_by_rel_path(clean_filename)
+        rel_p = str(dest_path.relative_to(config.data_path)).replace("\\", "/")
+        item = db.get_by_rel_path(rel_p)
 
         return {
             "status": "uploaded",

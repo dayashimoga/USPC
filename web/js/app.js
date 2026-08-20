@@ -232,14 +232,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       } catch (err) {
         console.error(`Upload error on ${file.name}:`, err);
+        uploadFilename.textContent = `Error uploading ${file.name}: ${err.message}`;
+        await new Promise(r => setTimeout(r, 2000));
       }
     }
 
-    uploadFilename.textContent = 'All uploads complete!';
+    uploadFilename.textContent = 'Upload complete!';
     setTimeout(() => {
       uploadCard.classList.add('hidden');
     }, 1500);
 
+    await API.triggerScan();
     loadLibrary();
   }
 
