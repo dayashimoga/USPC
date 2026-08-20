@@ -96,7 +96,7 @@ class NetworkManager:
 
         headscale_conf = {
             "server_url": f"http://127.0.0.1:{self.headscale_port}",
-            "listen_addr": f"0.0.0.0:{self.headscale_port}",
+            "listen_addr": f"0.0.0.0:{self.headscale_port}",  # nosec B104
             "metrics_listen_addr": "127.0.0.1:9090",
             "grpc_listen_addr": "127.0.0.1:50443",
             "grpc_allow_insecure": False,

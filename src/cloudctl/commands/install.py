@@ -188,7 +188,7 @@ def execute_install(args: argparse.Namespace) -> int:
                 "USPC_CACHE_PATH": "/data/media_cache",
                 "USPC_JWT_SECRET": secrets.media_jwt_secret,
                 "USPC_PORT": "8085",
-                "USPC_HOST": "0.0.0.0",
+                "USPC_HOST": "0.0.0.0",  # nosec B104
             },
             volumes=[
                 (str(paths.nextcloud_data), "/data/nextcloud"),
