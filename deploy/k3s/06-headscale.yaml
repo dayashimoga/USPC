@@ -21,6 +21,11 @@ spec:
           args: ["headscale", "serve"]
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /etc/headscale
+            - name: var-lib
+              mountPath: /var/lib/headscale
           resources:
             requests:
               cpu: 50m
@@ -28,6 +33,49 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+      volumes:
+        - name: config
+          configMap:
+            name: headscale-config
+        - name: var-lib
+          emptyDir: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: headscale-config
+  namespace: uspc
+data:
+  config.yaml: |
+    server_url: http://127.0.0.1:8080
+    listen_addr: 0.0.0.0:8080
+    metrics_listen_addr: 127.0.0.1:9090
+    grpc_listen_addr: 127.0.0.1:50443
+    grpc_allow_insecure: false
+    private_key_path: /var/lib/headscale/private.key
+    noise:
+      private_key_path: /var/lib/headscale/noise_private.key
+    prefixes:
+      v4: 100.64.0.0/10
+      v6: fd7a:115c:a1e0::/48
+    derp:
+      server:
+        enabled: false
+      urls: []
+      paths: []
+      auto_update_enabled: false
+    disable_check_updates: true
+    db_type: sqlite3
+    db_path: /var/lib/headscale/db.sqlite
+    database:
+      type: sqlite3
+      sqlite:
+        path: /var/lib/headscale/db.sqlite
+    dns:
+      magic_dns: true
+      base_domain: uspc.local
+      nameservers:
+        - 1.1.1.1
 ---
 apiVersion: v1
 kind: Service

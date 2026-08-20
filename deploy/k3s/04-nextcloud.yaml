@@ -22,6 +22,7 @@ spec:
           image: docker.io/library/nextcloud:27.1.4-apache
           ports:
             - containerPort: 80
+              hostPort: 8081
           env:
             - name: POSTGRES_HOST
               value: "postgres.uspc.svc.cluster.local"
@@ -56,6 +57,7 @@ metadata:
   name: nextcloud
   namespace: uspc
 spec:
+  type: LoadBalancer
   selector:
     app: nextcloud
   ports:
