@@ -118,20 +118,19 @@ def execute_install(args: argparse.Namespace) -> int:
         if host.os_name == "windows"
         else (str(paths.nextcloud_data), "/var/www/html/data")
     )
+    nc_env = {
+        "POSTGRES_HOST": "127.0.0.1" if cm.engine == "podman" else "uspc-postgres",
+        "POSTGRES_DB": pg_cfg["db_name"],
+        "POSTGRES_USER": pg_cfg["user"],
+        "POSTGRES_PASSWORD": secrets.postgres_password,
+        "REDIS_HOST": "127.0.0.1" if cm.engine == "podman" else "uspc-redis",
+        "NEXTCLOUD_TRUSTED_DOMAINS": f"{config['cloud']['domain']} localhost 127.0.0.1",
+        "NEXTCLOUD_DATA_DIR_CHECK": "false",
+    }
     cm.run_container(
         name="uspc-nextcloud",
         image=f"docker.io/library/nextcloud:{nc_cfg['version']}",
-        env={
-            "POSTGRES_HOST": "127.0.0.1" if cm.engine == "podman" else "uspc-postgres",
-            "POSTGRES_DB": pg_cfg["db_name"],
-            "POSTGRES_USER": pg_cfg["user"],
-            "POSTGRES_PASSWORD": secrets.postgres_password,
-            "REDIS_HOST": "127.0.0.1" if cm.engine == "podman" else "uspc-redis",
-            "NEXTCLOUD_ADMIN_USER": config["cloud"]["admin_user"],
-            "NEXTCLOUD_ADMIN_PASSWORD": secrets.nextcloud_admin_password,
-            "NEXTCLOUD_TRUSTED_DOMAINS": f"{config['cloud']['domain']} localhost 127.0.0.1",
-            "NEXTCLOUD_DATA_DIR_CHECK": "false",
-        },
+        env=nc_env,
         volumes=[
             nc_data_vol,
             nc_cfg_vol,

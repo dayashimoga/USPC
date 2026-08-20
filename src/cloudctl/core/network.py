@@ -100,9 +100,9 @@ class NetworkManager:
             "metrics_listen_addr": "127.0.0.1:9090",
             "grpc_listen_addr": "127.0.0.1:50443",
             "grpc_allow_insecure": False,
-            "private_key_path": str(headscale_dir / "private.key"),
+            "private_key_path": "/var/lib/headscale/private.key",
             "noise": {
-                "private_key_path": str(headscale_dir / "noise_private.key"),
+                "private_key_path": "/var/lib/headscale/noise_private.key",
             },
             "prefixes": {
                 "v4": self.vpn_subnet,
@@ -120,9 +120,9 @@ class NetworkManager:
             "disable_check_updates": True,
             "ephemeral_node_inactivity_timeout": "30m",
             "database": {
-                "type": "sqlite3",
+                "type": "sqlite",
                 "sqlite": {
-                    "path": str(headscale_dir / "db.sqlite"),
+                    "path": "/var/lib/headscale/db.sqlite",
                 },
             },
             "dns": {
@@ -136,9 +136,6 @@ class NetworkManager:
             },
         }
 
-        # Save private keys
-        atomic_write(headscale_dir / "private.key", private_key, mode=0o600)
-        atomic_write(headscale_dir / "noise_private.key", noise_private_key, mode=0o600)
         # Save headscale yaml config
         atomic_write(config_file, yaml.dump(headscale_conf, default_flow_style=False), mode=0o640)
         logger.info(f"Headscale VPN configuration generated at {config_file}")
