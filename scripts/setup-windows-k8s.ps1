@@ -41,8 +41,8 @@ if (-not (Get-Command kubectl -ErrorAction SilentlyContinue)) {
 Write-Host "  [OK] kubectl detected: $(kubectl version --client --short 2>$null | Select-Object -First 1)" -ForegroundColor Green
 
 # Check if Kubernetes cluster is accessible
-$ClusterInfo = kubectl cluster-info 2>$null
-if (-not $ClusterInfo) {
+$null = kubectl cluster-info --request-timeout=2s 2>&1
+if ($LASTEXITCODE -ne 0) {
     Write-Host "  [!] No active Kubernetes cluster responding. Checking for minikube or k3d..." -ForegroundColor Yellow
     if (Get-Command minikube -ErrorAction SilentlyContinue) {
         Write-Host "  [>] Starting Minikube cluster..." -ForegroundColor Cyan

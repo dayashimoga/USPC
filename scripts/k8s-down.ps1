@@ -29,8 +29,8 @@ Write-Host "  [OK] Port forwarding proxies stopped." -ForegroundColor Green
 Write-Host "`n==> Step 2: Deleting Kubernetes workloads in namespace '$Namespace'..." -ForegroundColor Yellow
 $ManifestDir = Join-Path $RepoRoot "deploy\k3s"
 
-$ClusterResponding = kubectl cluster-info --request-timeout=3s 2>$null
-if (-not $ClusterResponding) {
+$null = kubectl cluster-info --request-timeout=2s 2>&1
+if ($LASTEXITCODE -ne 0) {
     Write-Host "  [i] No active Kubernetes cluster reachable. Workloads are already stopped." -ForegroundColor Green
 } else {
     if (Test-Path $ManifestDir) {
