@@ -21,7 +21,6 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8085
-              hostPort: 8085
           env:
             - name: USPC_HOST
               value: "0.0.0.0"

@@ -150,13 +150,11 @@ if ($ClusterAlive) {
         Write-Host "`n==> Step 5: Setting Up Localhost Port Forwarding" -ForegroundColor Yellow
         Get-Process -Name "kubectl" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -match "port-forward" } | Stop-Process -Force -ErrorAction SilentlyContinue
 
-        Start-Process -FilePath "kubectl" -ArgumentList "port-forward -n $Namespace svc/nextcloud 8081:8081" -WindowStyle Hidden
-        Start-Process -FilePath "kubectl" -ArgumentList "port-forward -n $Namespace svc/uspc-media 8085:8085" -WindowStyle Hidden
-        Start-Process -FilePath "kubectl" -ArgumentList "port-forward -n $Namespace svc/uspc-grafana 3000:3000" -WindowStyle Hidden -ErrorAction SilentlyContinue
+        Start-Process -FilePath "kubectl" -ArgumentList "port-forward --address 0.0.0.0,127.0.0.1 -n $Namespace svc/uspc-grafana 3000:3000" -WindowStyle Hidden -ErrorAction SilentlyContinue
 
-        Write-Host "  [OK] Forwarded Nextcloud       -> http://localhost:8081" -ForegroundColor Green
-        Write-Host "  [OK] Forwarded USPC Media      -> http://localhost:8085" -ForegroundColor Green
-        Write-Host "  [OK] Forwarded Grafana Metrics -> http://localhost:3000" -ForegroundColor Green
+        Write-Host "  [OK] Active Nextcloud (LoadBalancer) -> http://localhost:8081" -ForegroundColor Green
+        Write-Host "  [OK] Active USPC Media (LoadBalancer) -> http://localhost:8085" -ForegroundColor Green
+        Write-Host "  [OK] Forwarded Grafana Metrics       -> http://localhost:3000" -ForegroundColor Green
     }
 } else {
     $manifestCount = (kubectl kustomize $ManifestDir | Select-String "kind:").Count
