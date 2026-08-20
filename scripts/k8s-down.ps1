@@ -29,20 +29,25 @@ Write-Host "  [OK] Port forwarding proxies stopped." -ForegroundColor Green
 Write-Host "`n==> Step 2: Deleting Kubernetes workloads in namespace '$Namespace'..." -ForegroundColor Yellow
 $ManifestDir = Join-Path $RepoRoot "deploy\k3s"
 
-if (Test-Path $ManifestDir) {
-    kubectl delete -k $ManifestDir -n $Namespace --ignore-not-found=true
-}
-
-# Step 3: Handle persistent data & namespace deletion
-if ($PurgeData) {
-    Write-Host "`n==> Step 3: Purging PersistentVolumeClaims and Secrets..." -ForegroundColor Yellow
-    kubectl delete pvc --all -n $Namespace --ignore-not-found=true
-    kubectl delete secret uspc-secrets -n $Namespace --ignore-not-found=true
-    kubectl delete namespace $Namespace --ignore-not-found=true
-    Write-Host "  [OK] Namespace '$Namespace' and all persistent storage volumes deleted." -ForegroundColor Green
+$ClusterResponding = kubectl cluster-info --request-timeout=3s 2>$null
+if (-not $ClusterResponding) {
+    Write-Host "  [i] No active Kubernetes cluster reachable. Workloads are already stopped." -ForegroundColor Green
 } else {
-    Write-Host "`n==> Step 3: Preserving persistent storage volumes & namespace." -ForegroundColor Cyan
-    Write-Host "  [i] Persistent volumes (PVCs) kept intact. Use -PurgeData to remove." -ForegroundColor Gray
+    if (Test-Path $ManifestDir) {
+        kubectl delete -k $ManifestDir -n $Namespace --ignore-not-found=true --request-timeout=15s
+    }
+
+    # Step 3: Handle persistent data & namespace deletion
+    if ($PurgeData) {
+        Write-Host "`n==> Step 3: Purging PersistentVolumeClaims and Secrets..." -ForegroundColor Yellow
+        kubectl delete pvc --all -n $Namespace --ignore-not-found=true --request-timeout=15s
+        kubectl delete secret uspc-secrets -n $Namespace --ignore-not-found=true --request-timeout=15s
+        kubectl delete namespace $Namespace --ignore-not-found=true --request-timeout=15s
+        Write-Host "  [OK] Namespace '$Namespace' and all persistent storage volumes deleted." -ForegroundColor Green
+    } else {
+        Write-Host "`n==> Step 3: Preserving persistent storage volumes & namespace." -ForegroundColor Cyan
+        Write-Host "  [i] Persistent volumes (PVCs) kept intact. Use -PurgeData to remove." -ForegroundColor Gray
+    }
 }
 
 Write-Host "`n=================================================================" -ForegroundColor Cyan
