@@ -14,6 +14,7 @@ from cloudctl.core.network import NetworkManager
 from cloudctl.core.reporting import print_status_dashboard
 from cloudctl.core.secrets import SecretManager
 from cloudctl.core.storage import StorageManager
+from cloudctl.utils.shell import run_command
 
 logger = get_logger("cmd.install")
 
@@ -137,6 +138,37 @@ def execute_install(args: argparse.Namespace) -> int:
         ],
     )
     logger.info("Step 9/11: Nextcloud personal cloud container deployed.")
+
+    # Ensure admin files directory structure exists and is owned by www-data
+    admin_user = config["cloud"]["admin_user"]
+    run_command(
+        [
+            cm.engine,
+            "exec",
+            "-u",
+            "0:0",
+            "uspc-nextcloud",
+            "mkdir",
+            "-p",
+            f"/var/www/html/data/{admin_user}/files/Documents",
+            f"/var/www/html/data/{admin_user}/files/Photos",
+        ],
+        timeout=15.0,
+    )
+    run_command(
+        [
+            cm.engine,
+            "exec",
+            "-u",
+            "0:0",
+            "uspc-nextcloud",
+            "chown",
+            "-R",
+            "www-data:www-data",
+            "/var/www/html/data",
+        ],
+        timeout=15.0,
+    )
 
     # Step 10: Launch Media Library microservice
     if config["media"]["enabled"]:
