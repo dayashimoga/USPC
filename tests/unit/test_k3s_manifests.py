@@ -53,3 +53,32 @@ def test_k3s_deployments_resource_limits():
                 assert "limits" in res, (
                     f"Deployment {doc['metadata']['name']} container {c['name']} missing resource limits"
                 )
+
+
+def test_k8s_automation_scripts_exist_and_executable():
+    scripts_dir = Path("scripts")
+    expected_scripts = [
+        "setup-windows-k8s.ps1",
+        "k8s-up.ps1",
+        "k8s-down.ps1",
+        "teardown-windows-k8s.ps1",
+        "setup-linux-k8s.sh",
+        "k8s-down.sh",
+    ]
+    for script_name in expected_scripts:
+        script_file = scripts_dir / script_name
+        assert script_file.exists(), f"Automation script {script_name} must exist"
+        content = script_file.read_text(encoding="utf-8")
+        assert len(content) > 50, f"Script {script_name} must not be empty"
+        assert "uspc" in content, f"Script {script_name} must reference uspc namespace"
+
+
+def test_kustomize_manifest_resource_list():
+    kustomize_file = Path("deploy/k3s/kustomization.yaml")
+    assert kustomize_file.exists()
+    k_data = yaml.safe_load(kustomize_file.read_text(encoding="utf-8"))
+    assert k_data["kind"] == "Kustomization"
+    resources = k_data.get("resources", [])
+    assert "00-namespace.yaml" in resources
+    assert "04-nextcloud.yaml" in resources
+    assert "05-media-service.yaml" in resources
