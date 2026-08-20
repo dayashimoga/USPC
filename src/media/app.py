@@ -312,7 +312,7 @@ def create_app(config: MediaConfig | None = None) -> FastAPI:
     async def trigger_scan(request: Request):
         """Trigger immediate background sync of filesystem."""
         stats = indexer.sync_all()
-        return {"status": "scan_completed", "stats": stats}
+        return {"status": "scan_triggered", "stats": stats}
 
     @app.post("/api/upload")
     async def upload_media(

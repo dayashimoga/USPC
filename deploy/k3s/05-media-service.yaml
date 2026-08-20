@@ -33,7 +33,6 @@ spec:
           volumeMounts:
             - name: media-data
               mountPath: /data
-              readOnly: true
             - name: media-cache
               mountPath: /cache
           resources:

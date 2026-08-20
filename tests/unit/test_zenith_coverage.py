@@ -438,6 +438,10 @@ def test_lifecycle_failure_branches():
 
     args = MagicMock(config=None)
     with (
+        patch(
+            "cloudctl.core.container.ContainerManager.inspect_container",
+            return_value={"id": "mock"},
+        ),
         patch("cloudctl.core.container.ContainerManager.start_container", return_value=False),
         patch("cloudctl.core.container.ContainerManager.stop_container", return_value=False),
         patch("cloudctl.core.container.ContainerManager.restart_container", return_value=False),

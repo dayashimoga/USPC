@@ -31,6 +31,10 @@ spec:
               value: "nextcloud"
             - name: REDIS_HOST
               value: "redis.uspc.svc.cluster.local"
+            - name: NEXTCLOUD_DATA_DIR_CHECK
+              value: "false"
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              value: "mycloud.local localhost 127.0.0.1"
           volumeMounts:
             - name: nextcloud-data
               mountPath: /var/www/html/data
