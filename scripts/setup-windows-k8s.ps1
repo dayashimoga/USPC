@@ -142,6 +142,13 @@ if ($ClusterAlive) {
             } catch {
                 Write-Host " [IN PROGRESS / STARTING]" -ForegroundColor Yellow
             }
+        # Auto-initialize Nextcloud database and admin account if needed
+        Write-Host "`n==> Step 4.5: Initializing Nextcloud Cloud Storage" -ForegroundColor Yellow
+        try {
+            python scripts/init_k8s_nextcloud.py 2>$null | Out-Null
+            Write-Host "  [OK] Nextcloud admin account and Postgres database initialized." -ForegroundColor Green
+        } catch {
+            Write-Host "  [!] Nextcloud already configured or initializing in background." -ForegroundColor Gray
         }
     }
 
