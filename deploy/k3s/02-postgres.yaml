@@ -26,11 +26,7 @@ spec:
             - name: POSTGRES_USER
               value: "nextcloud"
             - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: uspc-secrets
-                  key: postgres_password
-                  optional: true
+              value: "uspc_postgres_secure_pass"
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
